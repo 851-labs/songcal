@@ -1,0 +1,22 @@
+{
+  "name": "songcal",
+  "version": "1.0.0",
+  "description": "Sync Apple Music listening history to Google Calendar",
+  "module": "src/index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "sync": "bun run src/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "googleapis": "^169.0.0",
+    "jose": "^6.1.3"
+  }
+}
