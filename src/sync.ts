@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { db, schema } from "./db";
-import type { PlayedTrack } from "./apple-music";
-import type { GoogleCalendarClient } from "./google-calendar";
+import type { PlayedTrack } from "./clients/apple-music";
+import type { GoogleCalendarClient } from "./clients/google-calendar";
 
 const SYNC_STATE_KEYS = {
   lastSeenTrackIds: "lastSeenTrackIds",

@@ -1,7 +1,7 @@
 import { SignJWT, importPKCS8 } from "jose";
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "fs";
 import { dirname } from "path";
-import type { Config } from "./config";
+import type { Config } from "../config";
 
 interface AppleUserToken {
   userToken: string;

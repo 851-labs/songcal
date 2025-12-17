@@ -2,7 +2,7 @@ import { google } from "googleapis";
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from "fs";
 import { dirname } from "path";
 import { createServer } from "http";
-import type { Config } from "./config";
+import type { Config } from "../config";
 import type { PlayedTrack } from "./apple-music";
 
 interface StoredTokens {

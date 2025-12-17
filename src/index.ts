@@ -1,6 +1,6 @@
 import { loadConfig } from "./config";
-import { AppleMusicClient } from "./apple-music";
-import { GoogleCalendarClient } from "./google-calendar";
+import { AppleMusicClient } from "./clients/apple-music";
+import { GoogleCalendarClient } from "./clients/google-calendar";
 import { syncTracks, updateSyncState, handleColdStart } from "./sync";
 
 let isRunning = true;
