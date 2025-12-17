@@ -3,6 +3,10 @@ import { homedir } from "os";
 import { join } from "path";
 
 interface Config {
+  // Sync settings
+  sync: {
+    intervalMs: number;
+  };
   // Apple MusicKit
   apple: {
     teamId: string;
@@ -42,10 +46,16 @@ function loadPrivateKey(pathOrContent: string): string {
   return pathOrContent;
 }
 
+// Default sync interval: 1 minute
+const DEFAULT_SYNC_INTERVAL_MS = 60_000;
+
 function loadConfig(): Config {
   const dataDir = join(homedir(), ".songcal");
 
   return {
+    sync: {
+      intervalMs: parseInt(process.env.SYNC_INTERVAL_MS || String(DEFAULT_SYNC_INTERVAL_MS), 10),
+    },
     apple: {
       teamId: requiredEnv("APPLE_TEAM_ID"),
       keyId: requiredEnv("APPLE_KEY_ID"),
@@ -54,7 +64,7 @@ function loadConfig(): Config {
     google: {
       clientId: requiredEnv("GOOGLE_CLIENT_ID"),
       clientSecret: requiredEnv("GOOGLE_CLIENT_SECRET"),
-      calendarName: process.env.GOOGLE_CALENDAR_NAME || "Music History",
+      calendarName: process.env.GOOGLE_CALENDAR_NAME || "Apple Music",
     },
     paths: {
       appleUserToken: join(dataDir, "apple-user-token.json"),
@@ -63,4 +73,5 @@ function loadConfig(): Config {
   };
 }
 
-export { Config, loadConfig };
+export { loadConfig };
+export type { Config };

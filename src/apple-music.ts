@@ -32,6 +32,7 @@ interface PlayedTrack {
   artistName: string;
   albumName: string;
   durationMs: number;
+  data: Record<string, unknown>;
 }
 
 class AppleMusicClient {
@@ -162,9 +163,6 @@ class AppleMusicClient {
 
     const data: RecentlyPlayedResponse = await response.json();
 
-    console.log("\n📱 Apple Music API Response:");
-    console.log(JSON.stringify(data, null, 2));
-
     return data.data.map((item) => ({
       id: item.id,
       type: item.type,
@@ -172,8 +170,10 @@ class AppleMusicClient {
       artistName: item.attributes.artistName || "Unknown Artist",
       albumName: item.attributes.albumName || "Unknown Album",
       durationMs: item.attributes.durationInMillis || 0,
+      data: item as Record<string, unknown>,
     }));
   }
 }
 
-export { AppleMusicClient, PlayedTrack };
+export { AppleMusicClient };
+export type { PlayedTrack };

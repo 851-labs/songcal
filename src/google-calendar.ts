@@ -13,7 +13,7 @@ interface StoredTokens {
 
 class GoogleCalendarClient {
   private config: Config;
-  private oauth2Client: ReturnType<typeof google.auth.OAuth2>;
+  private oauth2Client: InstanceType<typeof google.auth.OAuth2>;
   private calendar: ReturnType<typeof google.calendar>;
   private calendarId: string | null = null;
 
@@ -162,7 +162,7 @@ class GoogleCalendarClient {
       calendarId,
       timeMin: yesterday.toISOString(),
       timeMax: now.toISOString(),
-      privateExtendedProperty: `trackId=${track.id}`,
+      privateExtendedProperty: [`trackId=${track.id}`],
       maxResults: 1,
     });
 
