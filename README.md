@@ -5,7 +5,8 @@ Sync your Apple Music listening history to Google Calendar.
 ## Prerequisites
 
 - [Bun](https://bun.sh) runtime
-- Apple Developer account ($99/year)
+- PostgreSQL database
+- Apple Developer account
 - Google Cloud project with Calendar API enabled
 
 ## Setup
@@ -34,58 +35,89 @@ cp .env.example .env
 Edit `.env` with your credentials:
 
 ```bash
-APPLE_TEAM_ID=XXXXXXXXXX
-APPLE_KEY_ID=XXXXXXXXXX
-APPLE_PRIVATE_KEY=~/path/to/AuthKey_XXXXXX.p8
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/songcal"
 
-GOOGLE_CLIENT_ID=xxxxx.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=GOCSPX-xxxxx
+# Apple Music
+APPLE_TEAM_ID="XXXXXXXXXX"
+APPLE_KEY_ID="XXXXXXXXXX"
+APPLE_PRIVATE_KEY="./AuthKey_XXXXXX.p8"
+
+# Google Calendar
+GOOGLE_CLIENT_ID="xxxxx.apps.googleusercontent.com"
+GOOGLE_CLIENT_SECRET="GOCSPX-xxxxx"
+
+# Optional
+SYNC_INTERVAL_MS="60000"  # Default: 1 minute
+GOOGLE_CALENDAR_NAME="Apple Music"  # Default calendar name
 ```
 
-### 4. Install Dependencies
+### 4. Install & Setup Database
 
 ```bash
 bun install
+bun run db:push
 ```
 
 ## Usage
 
-### One-time sync
+### Run the service
 
 ```bash
-bun run sync
+bun run start
 ```
 
-On first run, you'll be prompted to:
-1. Authorize with Google Calendar (browser popup)
-2. Provide your Apple Music user token (from browser cookies)
+On first run:
+1. **Cold start**: Initial tracks are recorded as baseline (no calendar events created)
+2. **Google auth**: Browser opens for Calendar authorization
+3. **Apple auth**: Paste your `media-user-token` from browser cookies
 
-### Automated sync (cron)
+The service then polls Apple Music every minute. New tracks are synced to Google Calendar with accurate timestamps.
 
-Run every 5 minutes to catch all your listening:
+### Database commands
 
 ```bash
-# Edit crontab
-crontab -e
-
-# Add this line (adjust path)
-*/5 * * * * cd ~/repos/pondorasti/songcal && bun run sync >> ~/.songcal/sync.log 2>&1
+bun run db:push      # Push schema to database
+bun run db:studio    # Open Drizzle Studio
+bun run db:generate  # Generate migrations
+bun run db:migrate   # Run migrations
 ```
 
 ## How It Works
 
-1. Fetches your last ~10 played tracks from Apple Music
-2. Checks Google Calendar for existing events (avoids duplicates)
-3. Creates events for new tracks with song title, artist, album, and duration
+1. **Cold start detection**: First run stores baseline tracks without creating calendar events
+2. **Polling**: Fetches recently played tracks every minute
+3. **Deduplication**: Compares with previous poll to find truly new plays
+4. **Sync**: Creates calendar events for new tracks with current timestamp
+5. **Storage**: All tracks stored in Postgres for history
+
+## Architecture
+
+```
+src/
+├── clients/
+│   ├── apple-music.ts      # Apple Music API client
+│   └── google-calendar.ts  # Google Calendar API client
+├── db/
+│   ├── index.ts            # Database connection
+│   └── schema.ts           # Drizzle schema
+├── config.ts               # Environment config
+├── sync.ts                 # Sync logic
+└── index.ts                # Entry point
+```
 
 ## Data Storage
 
-Tokens are stored in `~/.songcal/`:
+**Database tables:**
+- `tracks` - Listening history with metadata
+- `sync_state` - Service state (last seen tracks, initialization flag)
+
+**Local tokens** (`~/.songcal/`):
 - `apple-user-token.json` - Apple Music user token
 - `google-token.json` - Google OAuth tokens
 
 ## Limitations
 
 - Apple Music API returns only the **last 10 tracks** with **no timestamps**
-- Events are timestamped when synced, not when actually played
-- Poll frequently (every 3-5 min) to minimize missed tracks
+- Timestamps reflect when tracks were detected, not exact play time
+- Accuracy depends on poll frequency (default: 1 minute)
