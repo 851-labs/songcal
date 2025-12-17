@@ -3,40 +3,94 @@ import { db, schema } from "./db";
 import type { PlayedTrack } from "./apple-music";
 import type { GoogleCalendarClient } from "./google-calendar";
 
+const SYNC_STATE_KEYS = {
+  lastSeenTrackIds: "lastSeenTrackIds",
+  initialized: "initialized",
+} as const;
+
+/**
+ * Check if this is a cold start (first run after service start)
+ */
+export async function isInitialized(): Promise<boolean> {
+  const value = await getSyncState(SYNC_STATE_KEYS.initialized);
+  return value === "true";
+}
+
+/**
+ * Get the track IDs from the previous sync
+ */
+async function getLastSeenTrackIds(): Promise<Set<string>> {
+  const value = await getSyncState(SYNC_STATE_KEYS.lastSeenTrackIds);
+  if (!value) return new Set();
+  try {
+    const ids = JSON.parse(value) as string[];
+    return new Set(ids);
+  } catch {
+    return new Set();
+  }
+}
+
+/**
+ * Store the current batch of track IDs for the next comparison
+ */
+async function setLastSeenTrackIds(trackIds: string[]): Promise<void> {
+  await updateSyncState(SYNC_STATE_KEYS.lastSeenTrackIds, JSON.stringify(trackIds));
+}
+
+/**
+ * Handle cold start - store initial tracks without creating calendar events
+ * Returns true if this was a cold start
+ */
+export async function handleColdStart(tracks: PlayedTrack[]): Promise<boolean> {
+  const initialized = await isInitialized();
+  
+  if (initialized) {
+    return false; // Not a cold start
+  }
+
+  console.log("🧊 Cold start detected - storing baseline tracks (no calendar events)");
+  
+  // Store the current track IDs as baseline
+  const trackIds = tracks.map((t) => t.id);
+  await setLastSeenTrackIds(trackIds);
+  
+  // Mark as initialized
+  await updateSyncState(SYNC_STATE_KEYS.initialized, "true");
+  
+  console.log(`   Baseline: ${trackIds.length} tracks recorded`);
+  return true;
+}
+
 /**
  * Sync a batch of tracks to the database and Google Calendar
+ * Only syncs tracks that are NEW compared to the previous poll
  */
 export async function syncTracks(
   tracks: PlayedTrack[],
   googleCalendar: GoogleCalendarClient
 ): Promise<{ synced: number; skipped: number }> {
+  // Get track IDs from previous poll
+  const lastSeenIds = await getLastSeenTrackIds();
+  const currentTrackIds = tracks.map((t) => t.id);
+  
+  // Update stored track IDs for next comparison
+  await setLastSeenTrackIds(currentTrackIds);
+  
+  // Find truly new tracks (not in the previous batch)
+  const newTracks = tracks.filter((t) => !lastSeenIds.has(t.id));
+  
+  if (newTracks.length === 0) {
+    return { synced: 0, skipped: tracks.length };
+  }
+
   let synced = 0;
   let skipped = 0;
+  const now = new Date();
 
-  for (const track of tracks) {
-    // Create a unique ID based on track ID and current timestamp
-    // This allows the same track to be recorded multiple times
-    const now = new Date();
+  for (const track of newTracks) {
     const uniqueId = `${track.id}_${now.getTime()}`;
 
-    // Check if this exact play was already recorded (within last 2 minutes to avoid duplicates)
-    const twoMinutesAgo = new Date(now.getTime() - 2 * 60 * 1000);
-    const existingTracks = await db
-      .select()
-      .from(schema.tracks)
-      .where(eq(schema.tracks.trackId, track.id))
-      .limit(10);
-
-    // Check if there's a recent entry for this track
-    const recentEntry = existingTracks.find(
-      (t) => t.playedAt.getTime() > twoMinutesAgo.getTime()
-    );
-
-    if (recentEntry) {
-      skipped++;
-      continue;
-    }
-
+    // Store in database
     await db.insert(schema.tracks).values({
       id: uniqueId,
       trackId: track.id,
@@ -60,14 +114,15 @@ export async function syncTracks(
       synced++;
     } catch (error) {
       console.error(`  ✗ Failed to sync ${track.name}: ${error}`);
+      skipped++;
     }
   }
 
-  return { synced, skipped };
+  return { synced, skipped: tracks.length - newTracks.length + skipped };
 }
 
 /**
- * Update the last sync timestamp in the database
+ * Update a sync state value in the database
  */
 export async function updateSyncState(
   key: string,

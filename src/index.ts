@@ -1,7 +1,7 @@
 import { loadConfig } from "./config";
 import { AppleMusicClient } from "./apple-music";
 import { GoogleCalendarClient } from "./google-calendar";
-import { syncTracks, updateSyncState } from "./sync";
+import { syncTracks, updateSyncState, handleColdStart } from "./sync";
 
 let isRunning = true;
 
@@ -22,9 +22,15 @@ async function runSync(
       return;
     }
 
+    // Handle cold start - first run just records baseline, no calendar events
+    const wasColdStart = await handleColdStart(tracks);
+    if (wasColdStart) {
+      return;
+    }
+
     // Sync tracks to database and Google Calendar
     const { synced, skipped } = await syncTracks(tracks, googleCalendar);
-    console.log(`Synced ${synced} new tracks, skipped ${skipped} duplicates`);
+    console.log(`Synced ${synced} new tracks, skipped ${skipped} existing`);
 
     // Update last sync timestamp
     await updateSyncState("lastSyncAt", new Date().toISOString());
