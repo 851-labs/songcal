@@ -176,14 +176,24 @@ class GoogleCalendarClient {
     const calendarId = await this.getOrCreateCalendar();
 
     const now = new Date();
-    const durationMs = track.durationMs || 3 * 60 * 1000; // Default 3 min
-    const endTime = new Date(now.getTime() + durationMs);
+    const durationMs = track.durationMs || 0;
+    // Use 1ms duration so event appears as a point in time, not a block
+    const endTime = new Date(now.getTime() + 1);
 
     await this.calendar.events.insert({
       calendarId,
       requestBody: {
         summary: `${track.name} – ${track.artistName}`,
-        description: `Album: ${track.albumName}\nDuration: ${this.formatDuration(durationMs)}`,
+        description: [
+          `<b>Album</b>`,
+          track.albumName,
+          ``,
+          `<b>Duration</b>`,
+          this.formatDuration(durationMs),
+          ``,
+          `<b>Link</b>`,
+          `https://music.apple.com/song/${track.id}`,
+        ].join("\n"),
         start: {
           dateTime: now.toISOString(),
           timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -192,6 +202,7 @@ class GoogleCalendarClient {
           dateTime: endTime.toISOString(),
           timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         },
+        transparency: "transparent", // Mark as "Free" (not busy)
         extendedProperties: {
           private: {
             trackId: track.id,
