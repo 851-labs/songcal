@@ -176,9 +176,7 @@ class GoogleCalendarClient {
     const calendarId = await this.getOrCreateCalendar();
 
     const now = new Date();
-    const durationMs = track.durationMs || 0;
-    // Use 1ms duration so event appears as a point in time, not a block
-    const endTime = new Date(now.getTime() + 1);
+    const endTime = new Date(now.getTime() + track.durationMs);
 
     await this.calendar.events.insert({
       calendarId,
@@ -189,7 +187,7 @@ class GoogleCalendarClient {
           track.albumName,
           ``,
           `<b>Duration</b>`,
-          this.formatDuration(durationMs),
+          this.formatDuration(track.durationMs),
           ``,
           `<b>Link</b>`,
           `https://music.apple.com/song/${track.id}`,
