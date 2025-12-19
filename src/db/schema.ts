@@ -18,6 +18,19 @@ export const tracks = pgTable("tracks", {
 });
 
 /**
+ * YouTube watches table - stores YouTube watch history from Takeout
+ */
+export const youtubeWatches = pgTable("youtube_watches", {
+  id: text("id").primaryKey(), // Format: `${videoId}_${watchedAt.getTime()}`
+  videoId: text("video_id").notNull(),
+  title: text("title").notNull(),
+  channel: text("channel").notNull(),
+  watchedAt: timestamp("watched_at", { withTimezone: true }).notNull(),
+  syncedToCalendar: boolean("synced_to_calendar").notNull().default(false),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/**
  * Sync state table - stores key-value pairs for sync state
  */
 export const syncState = pgTable("sync_state", {

@@ -7,6 +7,7 @@
   "private": true,
   "scripts": {
     "start": "bun --bun run src/index.ts",
+    "import:youtube": "bun --bun run src/import-youtube.ts",
     "types:check": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",

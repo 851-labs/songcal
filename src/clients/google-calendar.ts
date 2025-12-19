@@ -4,6 +4,7 @@ import { dirname } from "path";
 import { createServer } from "http";
 import type { Config } from "../config";
 import type { PlayedTrack } from "./apple-music";
+import type { YouTubeWatch } from "./youtube";
 
 interface StoredTokens {
   access_token: string;
@@ -16,6 +17,7 @@ class GoogleCalendarClient {
   private oauth2Client: InstanceType<typeof google.auth.OAuth2>;
   private calendar: ReturnType<typeof google.calendar>;
   private calendarId: string | null = null;
+  private youtubeCalendarId: string | null = null;
 
   constructor(config: Config) {
     this.config = config;
@@ -215,6 +217,77 @@ class GoogleCalendarClient {
     const minutes = Math.floor(ms / 60000);
     const seconds = Math.floor((ms % 60000) / 1000);
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  }
+
+  /**
+   * Get or create the YouTube History calendar
+   */
+  async getOrCreateYouTubeCalendar(): Promise<string> {
+    if (this.youtubeCalendarId) return this.youtubeCalendarId;
+
+    const calendarName = "YouTube";
+
+    // List calendars to find existing one
+    const { data } = await this.calendar.calendarList.list();
+    const existing = data.items?.find((cal) => cal.summary === calendarName);
+
+    if (existing) {
+      this.youtubeCalendarId = existing.id!;
+      return this.youtubeCalendarId;
+    }
+
+    // Create new calendar
+    const { data: newCal } = await this.calendar.calendars.insert({
+      requestBody: {
+        summary: calendarName,
+        description: "YouTube watch history imported from Google Takeout",
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      },
+    });
+
+    this.youtubeCalendarId = newCal.id!;
+    console.log(`✓ Created calendar: ${calendarName}`);
+    return this.youtubeCalendarId;
+  }
+
+  /**
+   * Create a calendar event for a YouTube watch
+   */
+  async createYouTubeEvent(watch: YouTubeWatch): Promise<void> {
+    const calendarId = await this.getOrCreateYouTubeCalendar();
+
+    // YouTube videos typically don't have duration in Takeout, use 10 min default
+    const durationMs = 10 * 60 * 1000;
+    const endTime = new Date(watch.watchedAt.getTime() + durationMs);
+
+    await this.calendar.events.insert({
+      calendarId,
+      requestBody: {
+        summary: watch.title,
+        description: [
+          `<b>Channel</b>`,
+          watch.channel,
+          ``,
+          `<b>Link</b>`,
+          watch.url,
+        ].join("\n"),
+        start: {
+          dateTime: watch.watchedAt.toISOString(),
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        },
+        end: {
+          dateTime: endTime.toISOString(),
+          timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        },
+        transparency: "transparent", // Mark as "Free" (not busy)
+        extendedProperties: {
+          private: {
+            videoId: watch.videoId,
+            source: "songcal-youtube",
+          },
+        },
+      },
+    });
   }
 }
 
