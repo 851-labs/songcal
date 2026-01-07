@@ -1,27 +1,48 @@
 {
   "name": "songcal",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Sync Apple Music listening history to Google Calendar",
-  "module": "src/index.ts",
-  "type": "module",
   "private": true,
+  "type": "module",
   "scripts": {
-    "start": "bun --bun run src/index.ts",
+    "dev": "vite dev --port 3001",
+    "build": "vite build && tsc --noEmit",
+    "preview": "vite preview",
+    "deploy": "bun run build && wrangler deploy",
     "types:check": "tsc --noEmit",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
-  },
-  "devDependencies": {
-    "@types/bun": "^1.3.4",
-    "typescript": "^5.9.3",
-    "drizzle-kit": "^0.31.8"
+    "types:generate": "wrangler types",
+    "db:migrations:generate": "drizzle-kit generate",
+    "db:migrations:list": "wrangler d1 migrations list DB --local",
+    "db:migrations:list:prod": "wrangler d1 migrations list DB --remote",
+    "db:migrations:apply": "wrangler d1 migrations apply DB --local",
+    "db:migrations:apply:prod": "wrangler d1 migrations apply DB --remote"
   },
   "dependencies": {
+    "@cloudflare/vite-plugin": "^1.17.1",
+    "@tailwindcss/vite": "^4.1.18",
+    "@tanstack/react-router": "^1.144.0",
+    "@tanstack/react-start": "^1.145.5",
+    "@tanstack/router-plugin": "^1.145.4",
+    "better-auth": "^1.4.10",
+    "clsx": "^2.1.1",
     "drizzle-orm": "^0.45.1",
-    "googleapis": "^169.0.0",
     "jose": "^6.1.3",
-    "postgres": "^3.4.7"
+    "lucide-react": "^0.562.0",
+    "nanoid": "^5.1.6",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "tailwindcss": "^4.1.18",
+    "vite-tsconfig-paths": "^6.0.3",
+    "wrangler": "^4.54.0",
+    "zod": "^4.3.5"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.3",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.2",
+    "drizzle-kit": "^0.31.8",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.0"
   }
 }
