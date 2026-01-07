@@ -1,7 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "songcal",
-  "compatibility_date": "2025-01-06",
+  "compatibility_date": "2025-12-10",
   "compatibility_flags": ["nodejs_compat"],
   "main": "src/server.ts",
   "workers_dev": true,
@@ -11,9 +11,17 @@
   },
   "observability": {
     "enabled": true,
+    "head_sampling_rate": 1.0,
     "logs": {
       "enabled": true,
+      "head_sampling_rate": 1.0,
+      "persist": true,
       "invocation_logs": true,
+    },
+    "traces": {
+      "enabled": false,
+      "head_sampling_rate": 1.0,
+      "persist": true,
     },
   },
   "vars": {
@@ -23,7 +31,7 @@
     {
       "binding": "DB",
       "database_name": "songcal",
-      "database_id": "placeholder-will-be-replaced-after-creation",
+      "database_id": "ef1d5722-20ff-446a-b308-cc2178bd1bab",
       "migrations_dir": "drizzle/migrations",
     },
   ],
