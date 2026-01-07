@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm"
 import { drizzle } from "drizzle-orm/d1"
 import * as schema from "./db/schema"
-import { generateDeveloperToken, getRecentlyPlayed, type PlayedTrack } from "./clients/apple-music"
+import { generateDeveloperToken, getRecentlyPlayed } from "./clients/apple-music"
 import { refreshAccessToken, getOrCreateCalendar, createCalendarEvent } from "./clients/google-calendar"
 
 const CALENDAR_NAME = "Apple Music"

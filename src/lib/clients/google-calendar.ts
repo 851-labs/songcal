@@ -10,11 +10,6 @@ interface CalendarListResponse {
   }>
 }
 
-interface CalendarEvent {
-  id: string
-  summary: string
-}
-
 interface CreateEventResponse {
   id: string
 }
@@ -57,10 +52,7 @@ async function refreshAccessToken(
 /**
  * Get or create a calendar with the given name
  */
-async function getOrCreateCalendar(
-  accessToken: string,
-  calendarName: string
-): Promise<string> {
+async function getOrCreateCalendar(accessToken: string, calendarName: string): Promise<string> {
   // List calendars to find existing one
   const listResponse = await fetch(`${GOOGLE_CALENDAR_API}/users/me/calendarList`, {
     headers: {
@@ -112,40 +104,37 @@ async function createCalendarEvent(
 ): Promise<string> {
   const endTime = new Date(playedAt.getTime() + track.durationMs)
 
-  const response = await fetch(
-    `${GOOGLE_CALENDAR_API}/calendars/${encodeURIComponent(calendarId)}/events`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+  const response = await fetch(`${GOOGLE_CALENDAR_API}/calendars/${encodeURIComponent(calendarId)}/events`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      summary: `${track.name} – ${track.artistName}`,
+      description: [
+        `Album: ${track.albumName}`,
+        `Duration: ${formatDuration(track.durationMs)}`,
+        ``,
+        `https://music.apple.com/song/${track.id}`,
+      ].join("\n"),
+      start: {
+        dateTime: playedAt.toISOString(),
+        timeZone: "UTC",
       },
-      body: JSON.stringify({
-        summary: `${track.name} – ${track.artistName}`,
-        description: [
-          `Album: ${track.albumName}`,
-          `Duration: ${formatDuration(track.durationMs)}`,
-          ``,
-          `https://music.apple.com/song/${track.id}`,
-        ].join("\n"),
-        start: {
-          dateTime: playedAt.toISOString(),
-          timeZone: "UTC",
+      end: {
+        dateTime: endTime.toISOString(),
+        timeZone: "UTC",
+      },
+      transparency: "transparent",
+      extendedProperties: {
+        private: {
+          trackId: track.id,
+          source: "songcal",
         },
-        end: {
-          dateTime: endTime.toISOString(),
-          timeZone: "UTC",
-        },
-        transparency: "transparent",
-        extendedProperties: {
-          private: {
-            trackId: track.id,
-            source: "songcal",
-          },
-        },
-      }),
-    }
-  )
+      },
+    }),
+  })
 
   if (!response.ok) {
     const text = await response.text()
@@ -162,9 +151,4 @@ function formatDuration(ms: number): string {
   return `${minutes}:${seconds.toString().padStart(2, "0")}`
 }
 
-export {
-  refreshAccessToken,
-  getOrCreateCalendar,
-  createCalendarEvent,
-}
-
+export { refreshAccessToken, getOrCreateCalendar, createCalendarEvent }
