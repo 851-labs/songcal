@@ -2,7 +2,6 @@ import { createFileRoute, redirect, useLoaderData } from "@tanstack/react-router
 import { createServerFn } from "@tanstack/react-start"
 import { getRequestHeaders } from "@tanstack/react-start/server"
 import { CheckCircle, XCircle, Music, Calendar, RefreshCw, Clock } from "lucide-react"
-import { authClient } from "@/lib/auth/client"
 import { AppleMusicConnect } from "@/components/apple-music-connect"
 import { auth } from "@/lib/auth/server"
 import { db } from "@/lib/db"
@@ -21,13 +20,13 @@ const getDashboardData = createServerFn({ method: "GET" }).handler(async () => {
     .get()
 
   return {
+    userEmail: session.user.email,
     appleMusicConnected: !!token,
   }
 })
 
 function DashboardPage() {
-  const { data: session } = authClient.useSession()
-  const { appleMusicConnected } = useLoaderData({ from: "/dashboard" })
+  const { userEmail, appleMusicConnected } = useLoaderData({ from: "/dashboard" })
   const recentTracks: { name: string; artist: string; syncedAt: string }[] = []
 
   return (
@@ -45,7 +44,7 @@ function DashboardPage() {
             <StatusBadge connected={true} />
           </div>
           <h3 className="text-lg font-semibold mb-1">Google Calendar</h3>
-          <p className="text-zinc-400 text-sm mb-4">Connected as {session?.user?.email}</p>
+          <p className="text-zinc-400 text-sm mb-4">Connected as {userEmail}</p>
           <p className="text-xs text-zinc-500">Events sync to a calendar named "Apple Music"</p>
         </div>
 
