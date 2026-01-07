@@ -1,5 +1,6 @@
 import { createFileRoute, redirect, useLoaderData } from "@tanstack/react-router"
 import { createServerFn } from "@tanstack/react-start"
+import { getRequestHeaders } from "@tanstack/react-start/server"
 import { CheckCircle, XCircle, Music, Calendar, RefreshCw, Clock } from "lucide-react"
 import { authClient } from "@/lib/auth/client"
 import { AppleMusicConnect } from "@/components/apple-music-connect"
@@ -8,11 +9,10 @@ import { db } from "@/lib/db"
 import { appleMusicTokens } from "@/lib/db/schema"
 import { eq } from "drizzle-orm"
 
-const getDashboardData = createServerFn({ method: "GET" }).handler(async ({ request }) => {
-  const session = await auth.api.getSession({ headers: request.headers })
-  if (!session?.user) {
-    throw redirect({ to: "/" })
-  }
+const getDashboardData = createServerFn({ method: "GET" }).handler(async () => {
+  const headers = getRequestHeaders()
+  const session = await auth.api.getSession({ headers })
+  if (!session?.user) throw redirect({ to: "/" })
 
   const token = await db
     .select({ id: appleMusicTokens.id })
