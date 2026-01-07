@@ -1,11 +1,22 @@
 import { AppleMusicConnect } from "@/components/apple-music-connect"
 import { redirectIfUnauthenticatedMiddleware } from "@/lib/api/middleware"
 import { db } from "@/lib/db"
-import { appleMusicTokens } from "@/lib/db/schema"
+import { appleMusicTokens, tracks } from "@/lib/db/schema"
 import { createFileRoute, useLoaderData } from "@tanstack/react-router"
 import { createServerFn } from "@tanstack/react-start"
-import { eq } from "drizzle-orm"
+import { desc, eq } from "drizzle-orm"
 import { Calendar, CheckCircle, Clock, Music, RefreshCw, XCircle } from "lucide-react"
+
+function formatRelativeTime(date: Date): string {
+  const seconds = Math.floor((Date.now() - date.getTime()) / 1000)
+  if (seconds < 60) return "just now"
+  const minutes = Math.floor(seconds / 60)
+  if (minutes < 60) return `${minutes} min ago`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `${hours} hour${hours > 1 ? "s" : ""} ago`
+  const days = Math.floor(hours / 24)
+  return `${days} day${days > 1 ? "s" : ""} ago`
+}
 
 const getDashboardData = createServerFn({ method: "GET" })
   .middleware([redirectIfUnauthenticatedMiddleware])
@@ -18,15 +29,31 @@ const getDashboardData = createServerFn({ method: "GET" })
       .where(eq(appleMusicTokens.userId, session.user.id))
       .get()
 
+    const recentTracksData = await db
+      .select({
+        name: tracks.name,
+        artist: tracks.artistName,
+        syncedAt: tracks.createdAt,
+      })
+      .from(tracks)
+      .where(eq(tracks.userId, session.user.id))
+      .orderBy(desc(tracks.createdAt))
+      .limit(10)
+      .all()
+
     return {
       userEmail: session.user.email,
       appleMusicConnected: !!token,
+      recentTracks: recentTracksData.map((t) => ({
+        name: t.name,
+        artist: t.artist,
+        syncedAt: formatRelativeTime(t.syncedAt),
+      })),
     }
   })
 
 function DashboardPage() {
-  const { userEmail, appleMusicConnected } = useLoaderData({ from: "/dashboard" })
-  const recentTracks: { name: string; artist: string; syncedAt: string }[] = []
+  const { userEmail, appleMusicConnected, recentTracks } = useLoaderData({ from: "/dashboard" })
 
   return (
     <main className="max-w-4xl mx-auto px-6 py-12">
