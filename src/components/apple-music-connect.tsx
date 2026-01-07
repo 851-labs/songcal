@@ -18,8 +18,7 @@ function AppleMusicConnect() {
       const { developerToken } = (await response.json()) as { developerToken: string }
 
       // Configure MusicKit
-      // @ts-expect-error MusicKit is loaded from Apple's CDN
-      const music = await window.MusicKit.configure({
+      const music = await MusicKit.configure({
         developerToken,
         app: {
           name: "songcal",

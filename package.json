@@ -37,6 +37,8 @@
     "zod": "^4.3.5"
   },
   "devDependencies": {
+    "@types/apple-music-api": "^0.4.4",
+    "@types/musickit-js": "^1.0.10",
     "@types/node": "^25.0.3",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
