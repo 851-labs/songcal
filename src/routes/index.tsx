@@ -6,7 +6,7 @@ function LandingPage() {
   const { data: session, isPending } = authClient.useSession()
 
   const handleSignIn = () => {
-    authClient.signIn.social({ provider: "google" })
+    authClient.signIn.social({ provider: "google", callbackURL: "/dashboard" })
   }
 
   return (
