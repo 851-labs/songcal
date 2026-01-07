@@ -1,8 +1,8 @@
+import { db } from "@/lib/db"
 import { eq } from "drizzle-orm"
-import { drizzle } from "drizzle-orm/d1"
-import * as schema from "./db/schema"
-import { generateDeveloperToken, getRecentlyPlayed } from "./clients/apple-music"
-import { refreshAccessToken, getOrCreateCalendar, createCalendarEvent } from "./clients/google-calendar"
+import { generateDeveloperToken, getRecentlyPlayed } from "../lib/clients/apple-music"
+import { createCalendarEvent, getOrCreateCalendar, refreshAccessToken } from "../lib/clients/google-calendar"
+import * as schema from "../lib/db/schema"
 
 const CALENDAR_NAME = "Apple Music"
 
@@ -10,9 +10,7 @@ const CALENDAR_NAME = "Apple Music"
  * Sync tracks for a single user
  * Called by the queue consumer for each user
  */
-async function syncUserTracks(userId: string, env: Env): Promise<void> {
-  const db = drizzle(env.DB, { schema })
-
+async function syncUserTracks(userId: string): Promise<void> {
   console.log(`[sync] Starting sync for user ${userId}`)
 
   // Get user's Apple Music token

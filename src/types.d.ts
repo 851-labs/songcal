@@ -1,0 +1,3 @@
+interface SyncJobMessage {
+  userId: string
+}

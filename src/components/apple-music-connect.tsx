@@ -18,7 +18,7 @@ function AppleMusicConnect() {
       const { developerToken } = (await response.json()) as { developerToken: string }
 
       // Configure MusicKit
-      const music = await MusicKit.configure({
+      const music = MusicKit.configure({
         developerToken,
         app: {
           name: "songcal",
