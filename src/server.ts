@@ -1,5 +1,5 @@
 import handler, { createServerEntry } from "@tanstack/react-start/server-entry"
-import { enqueueSyncJobs } from "./queue/producer"
+import { produceSyncJobs } from "./queue/producer"
 import { consumeSyncJobs } from "./queue/consumer"
 
 export default {
@@ -12,7 +12,7 @@ export default {
   async scheduled(controller: ScheduledController): Promise<void> {
     switch (controller.cron) {
       case "* * * * *":
-        await enqueueSyncJobs()
+        await produceSyncJobs()
         break
     }
   },
