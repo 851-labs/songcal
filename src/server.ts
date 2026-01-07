@@ -1,6 +1,7 @@
 import handler, { createServerEntry } from "@tanstack/react-start/server-entry"
 import { produceSyncJobs } from "./queue/producer"
 import { consumeSyncJobs } from "./queue/consumer"
+import { SyncJobMessage } from "./queue/types"
 
 export default {
   ...createServerEntry({

@@ -4,6 +4,7 @@ import { generateDeveloperToken, getRecentlyPlayed } from "../lib/clients/apple-
 import { createCalendarEvent, getOrCreateCalendar, refreshAccessToken } from "../lib/clients/google-calendar"
 import * as schema from "../lib/db/schema"
 import { env } from "cloudflare:workers"
+import { SyncJobMessage } from "./types"
 
 const CALENDAR_NAME = "Apple Music"
 
