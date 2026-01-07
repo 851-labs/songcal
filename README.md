@@ -140,14 +140,6 @@ bun run db:migrations:apply:prod
 bun run deploy
 ```
 
-## How It Works
-
-1. **User signs in** with Google → better-auth handles OAuth, stores tokens
-2. **User connects Apple Music** → MusicKit JS authorization, token stored
-3. **Cron runs every minute** → enqueues sync job per user
-4. **Queue processes jobs** → fetches Apple Music history, creates Calendar events
-5. **Cold start protection** → first sync records baseline, no events created
-
 ## Commands
 
 | Command                      | Description                      |
