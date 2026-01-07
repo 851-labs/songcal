@@ -1,6 +1,6 @@
 import { db } from "@/lib/db"
 import { isNotNull } from "drizzle-orm"
-import * as schema from "../lib/db/schema"
+import * as schema from "@/lib/db/schema"
 import { env } from "cloudflare:workers"
 
 /**

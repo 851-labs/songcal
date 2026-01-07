@@ -1,7 +1,7 @@
 import handler, { createServerEntry } from "@tanstack/react-start/server-entry"
-import { produceSyncJobs } from "./queue/producer"
-import { consumeSyncJobs } from "./queue/consumer"
-import { SyncJobMessage } from "./queue/types"
+import { produceSyncJobs } from "./queues/sync/producer"
+import { consumeSyncJobs } from "./queues/sync/consumer"
+import { SyncJobMessage } from "./queues/sync/types"
 
 export default {
   ...createServerEntry({
@@ -19,6 +19,10 @@ export default {
   },
 
   async queue(batch: MessageBatch<SyncJobMessage>): Promise<void> {
-    await consumeSyncJobs(batch)
+    switch (batch.queue) {
+      case "songcal-sync":
+        await consumeSyncJobs(batch)
+        break
+    }
   },
 }

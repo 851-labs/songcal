@@ -1,8 +1,8 @@
 import { db } from "@/lib/db"
 import { eq } from "drizzle-orm"
-import { generateDeveloperToken, getRecentlyPlayed } from "../lib/clients/apple-music"
-import { createCalendarEvent, getOrCreateCalendar, refreshAccessToken } from "../lib/clients/google-calendar"
-import * as schema from "../lib/db/schema"
+import { generateDeveloperToken, getRecentlyPlayed } from "@/lib/clients/apple-music"
+import { createCalendarEvent, getOrCreateCalendar, refreshAccessToken } from "@/lib/clients/google-calendar"
+import * as schema from "@/lib/db/schema"
 import { env } from "cloudflare:workers"
 import { SyncJobMessage } from "./types"
 
