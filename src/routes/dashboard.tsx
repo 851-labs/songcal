@@ -1,13 +1,33 @@
-import { createFileRoute, redirect } from "@tanstack/react-router"
+import { createFileRoute, redirect, useLoaderData } from "@tanstack/react-router"
+import { createServerFn } from "@tanstack/react-start"
 import { CheckCircle, XCircle, Music, Calendar, RefreshCw, Clock } from "lucide-react"
 import { authClient } from "@/lib/auth/client"
 import { AppleMusicConnect } from "@/components/apple-music-connect"
+import { auth } from "@/lib/auth/server"
+import { db } from "@/lib/db"
+import { appleMusicTokens } from "@/lib/db/schema"
+import { eq } from "drizzle-orm"
+
+const getDashboardData = createServerFn({ method: "GET" }).handler(async ({ request }) => {
+  const session = await auth.api.getSession({ headers: request.headers })
+  if (!session?.user) {
+    throw redirect({ to: "/" })
+  }
+
+  const token = await db
+    .select({ id: appleMusicTokens.id })
+    .from(appleMusicTokens)
+    .where(eq(appleMusicTokens.userId, session.user.id))
+    .get()
+
+  return {
+    appleMusicConnected: !!token,
+  }
+})
 
 function DashboardPage() {
   const { data: session } = authClient.useSession()
-
-  // This will be populated from the server
-  const appleMusicConnected = false
+  const { appleMusicConnected } = useLoaderData({ from: "/dashboard" })
   const recentTracks: { name: string; artist: string; syncedAt: string }[] = []
 
   return (
@@ -77,7 +97,10 @@ function DashboardPage() {
         ) : (
           <div className="space-y-2">
             {recentTracks.map((track, i) => (
-              <div key={i} className="p-4 rounded-xl bg-midnight-900 border border-midnight-700 flex items-center justify-between">
+              <div
+                key={i}
+                className="p-4 rounded-xl bg-midnight-900 border border-midnight-700 flex items-center justify-between"
+              >
                 <div>
                   <p className="font-medium">{track.name}</p>
                   <p className="text-sm text-zinc-400">{track.artist}</p>
@@ -108,11 +131,7 @@ function StatusBadge({ connected }: { connected: boolean }) {
 
 const Route = createFileRoute("/dashboard")({
   component: DashboardPage,
-  beforeLoad: async ({ context }) => {
-    // Protect this route - redirect to home if not authenticated
-    // This will be implemented with server-side auth check
-  },
+  loader: () => getDashboardData(),
 })
 
 export { Route }
-
