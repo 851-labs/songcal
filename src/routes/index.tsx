@@ -49,7 +49,7 @@ function LandingPage() {
               onClick={handleSignIn}
               className="px-8 py-4 bg-violet-600 hover:bg-violet-500 rounded-xl font-semibold text-lg transition-colors cursor-pointer"
             >
-              Sign in with Google
+              Get started
             </button>
           )}
         </div>
