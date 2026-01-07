@@ -140,44 +140,6 @@ bun run db:migrations:apply:prod
 bun run deploy
 ```
 
-## Project Structure
-
-```
-songcal/
-├── src/
-│   ├── components/          # React components
-│   │   ├── header.tsx
-│   │   └── apple-music-connect.tsx
-│   ├── lib/
-│   │   ├── auth/            # better-auth config
-│   │   │   ├── client.ts
-│   │   │   └── server.ts
-│   │   ├── db/              # D1 database
-│   │   │   ├── index.ts
-│   │   │   └── schema/
-│   │   ├── clients/         # API clients
-│   │   │   ├── apple-music.ts
-│   │   │   └── google-calendar.ts
-│   │   └── sync.ts          # Sync logic
-│   ├── routes/              # TanStack Router pages
-│   │   ├── __root.tsx
-│   │   ├── index.tsx
-│   │   ├── dashboard.tsx
-│   │   └── api/
-│   │       ├── auth/$.ts
-│   │       ├── cron.ts
-│   │       └── apple-music/
-│   ├── server.ts            # Worker entry point
-│   └── styles.css           # Tailwind styles
-├── drizzle/
-│   └── migrations/          # D1 migrations
-├── public/
-├── wrangler.jsonc           # Cloudflare config
-├── vite.config.ts
-├── drizzle.config.ts
-└── package.json
-```
-
 ## How It Works
 
 1. **User signs in** with Google → better-auth handles OAuth, stores tokens
@@ -186,40 +148,18 @@ songcal/
 4. **Queue processes jobs** → fetches Apple Music history, creates Calendar events
 5. **Cold start protection** → first sync records baseline, no events created
 
-## Database Tables
-
-| Table                | Description                      |
-| -------------------- | -------------------------------- |
-| `users`              | User accounts (from better-auth) |
-| `sessions`           | Active sessions                  |
-| `accounts`           | OAuth tokens (Google)            |
-| `apple_music_tokens` | MusicKit user tokens             |
-| `tracks`             | Synced listening history         |
-| `sync_state`         | Per-user sync state              |
-
-## Environment Variables
-
-| Variable               | Description                                   |
-| ---------------------- | --------------------------------------------- |
-| `BETTER_AUTH_SECRET`   | Secret for session encryption                 |
-| `BETTER_AUTH_URL`      | App URL (e.g., `https://songcal.example.com`) |
-| `GOOGLE_CLIENT_ID`     | Google OAuth client ID                        |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret                    |
-| `APPLE_TEAM_ID`        | Apple Developer Team ID                       |
-| `APPLE_KEY_ID`         | Apple MusicKit Key ID                         |
-| `APPLE_PRIVATE_KEY`    | Apple MusicKit private key (PEM)              |
-
 ## Commands
 
-| Command                            | Description                     |
-| ---------------------------------- | ------------------------------- |
-| `bun run dev`                      | Start development server        |
-| `bun run build`                    | Build for production            |
-| `bun run deploy`                   | Build and deploy to Cloudflare  |
-| `bun run types:check`              | TypeScript check                |
-| `bun run db:migrations:generate`   | Generate migrations from schema |
-| `bun run db:migrations:apply`      | Apply migrations (local)        |
-| `bun run db:migrations:apply:prod` | Apply migrations (production)   |
+| Command                      | Description                      |
+| ---------------------------- | -------------------------------- |
+| `bun dev`                    | Start development server         |
+| `bun run build`              | Build for production             |
+| `bun run deploy`             | Build and deploy to Cloudflare   |
+| `bun types:check`            | TypeScript check                 |
+| `bun types:generate`         | Generate Cloudflare Worker types |
+| `bun db:migrations:generate` | Generate migrations from schema  |
+| `bun db:migrations:list`     | List migrations (local)          |
+| `bun db:migrations:apply`    | Apply migrations (local)         |
 
 ## Limitations
 
