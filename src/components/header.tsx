@@ -44,9 +44,9 @@ function Header() {
           ) : (
             <button
               onClick={handleSignIn}
-              className="px-4 py-2 rounded-lg bg-midnight-800 hover:bg-midnight-700 text-sm font-medium transition-colors cursor-pointer"
+              className="px-4 py-2 bg-violet-600 hover:bg-violet-500 rounded-lg font-semibold text-sm transition-colors cursor-pointer"
             >
-              Sign in
+              Get started
             </button>
           )}
         </nav>

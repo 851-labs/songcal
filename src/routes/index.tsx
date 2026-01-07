@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { Music, Calendar, Zap, ArrowRight } from "lucide-react"
+import { Music, Calendar, Zap } from "lucide-react"
 import { authClient } from "@/lib/auth/client"
 
 function LandingPage() {
@@ -40,18 +40,16 @@ function LandingPage() {
           ) : session?.user ? (
             <a
               href="/dashboard"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-violet-600 hover:bg-violet-500 rounded-xl font-semibold text-lg transition-colors"
+              className="px-8 py-4 bg-violet-600 hover:bg-violet-500 rounded-xl font-semibold text-lg transition-colors"
             >
               Go to Dashboard
-              <ArrowRight className="w-5 h-5" />
             </a>
           ) : (
             <button
               onClick={handleSignIn}
-              className="inline-flex items-center gap-3 px-8 py-4 bg-violet-600 hover:bg-violet-500 rounded-xl font-semibold text-lg transition-colors cursor-pointer"
+              className="px-8 py-4 bg-violet-600 hover:bg-violet-500 rounded-xl font-semibold text-lg transition-colors cursor-pointer"
             >
               Sign in with Google
-              <ArrowRight className="w-5 h-5" />
             </button>
           )}
         </div>
@@ -84,7 +82,11 @@ function LandingPage() {
           <h2 className="text-3xl font-bold text-center mb-16">How it works</h2>
           <div className="grid md:grid-cols-3 gap-12">
             <Step number={1} title="Sign in" description="Connect your Google account to get started." />
-            <Step number={2} title="Connect Apple Music" description="Authorize songcal to read your listening history." />
+            <Step
+              number={2}
+              title="Connect Apple Music"
+              description="Authorize songcal to read your listening history."
+            />
             <Step number={3} title="Enjoy" description="Your music history syncs to Google Calendar automatically." />
           </div>
         </div>
@@ -122,4 +124,3 @@ const Route = createFileRoute("/")({
 })
 
 export { Route }
-
