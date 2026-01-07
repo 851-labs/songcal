@@ -24,6 +24,12 @@
       "persist": true,
     },
   },
+  "routes": [
+    {
+      "pattern": "songcal.sh",
+      "custom_domain": true,
+    },
+  ],
   "vars": {
     "BETTER_AUTH_URL": "https://songcal.sh",
   },
