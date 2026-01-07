@@ -1,12 +1,14 @@
 import { AppleMusicConnect } from "@/components/apple-music-connect"
 import { CalendarPicker } from "@/components/calendar-picker"
+import { api } from "@/lib/api"
 import { redirectIfUnauthenticatedMiddleware } from "@/lib/api/middleware"
+import { authClient } from "@/lib/auth/client"
 import { db } from "@/lib/db"
 import { appleMusicTokens, syncState, tracks } from "@/lib/db/schema"
-import { createFileRoute, useLoaderData } from "@tanstack/react-router"
+import { createFileRoute, useLoaderData, useNavigate } from "@tanstack/react-router"
 import { createServerFn } from "@tanstack/react-start"
 import { desc, eq } from "drizzle-orm"
-import { Calendar, CheckCircle, Clock, Music, RefreshCw, XCircle } from "lucide-react"
+import { AlertTriangle, Calendar, CheckCircle, Clock, Music, RefreshCw, XCircle } from "lucide-react"
 
 function formatRelativeTime(date: Date): string {
   const seconds = Math.floor((Date.now() - date.getTime()) / 1000)
@@ -63,6 +65,18 @@ const getDashboardData = createServerFn({ method: "GET" })
 
 function DashboardPage() {
   const { userEmail, appleMusicConnected, selectedCalendarId, recentTracks } = useLoaderData({ from: "/dashboard" })
+  const navigate = useNavigate()
+
+  async function handleDeleteAccount() {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently deleted."
+    )
+    if (!confirmed) return
+
+    await api.account.delete()
+    await authClient.signOut()
+    navigate({ to: "/" })
+  }
 
   return (
     <main className="max-w-4xl mx-auto px-6 py-12">
@@ -145,6 +159,21 @@ function DashboardPage() {
             ))}
           </div>
         )}
+      </div>
+
+      {/* Delete Account */}
+      <div className="mt-16 pt-8 border-t border-midnight-700">
+        <h2 className="text-xl font-semibold mb-2">Delete Account</h2>
+        <p className="text-zinc-400 text-sm mb-4">
+          If you no longer wish to use SongCal, you can permanently delete your account.
+        </p>
+        <button
+          onClick={handleDeleteAccount}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-colors cursor-pointer"
+        >
+          <AlertTriangle className="w-4 h-4" />
+          Delete My Account
+        </button>
       </div>
     </main>
   )
