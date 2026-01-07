@@ -9,7 +9,7 @@ import { formatRelativeTime } from "@/utils/date"
 import { createFileRoute, useLoaderData, useNavigate } from "@tanstack/react-router"
 import { createServerFn } from "@tanstack/react-start"
 import { desc, eq } from "drizzle-orm"
-import { AlertTriangle, Calendar, CheckCircle, Clock, Music, RefreshCw, XCircle } from "lucide-react"
+import { AlertTriangle, Calendar, CheckCircle, Music, XCircle } from "lucide-react"
 
 const getDashboardData = createServerFn({ method: "GET" })
   .middleware([redirectIfUnauthenticatedMiddleware])
@@ -110,7 +110,16 @@ function DashboardPage() {
 
       {/* Recent Tracks */}
       <div>
-        <h2 className="text-xl font-semibold mb-4">Recently Synced</h2>
+        <div>
+          <h2 className="text-xl font-semibold inline-flex items-center gap-2">
+            Recently Synced
+            <span className="relative inline-flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+            </span>
+          </h2>
+          <p className="text-sm mb-4 text-zinc-500">Syncs automatically every minute</p>
+        </div>
         {recentTracks.length === 0 ? (
           <div className="p-8 rounded-2xl bg-midnight-900 border border-midnight-700 text-center">
             <Music className="w-10 h-10 text-zinc-600 mx-auto mb-3" />
