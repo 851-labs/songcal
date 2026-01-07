@@ -7,43 +7,42 @@
   "workers_dev": true,
   "preview_urls": true,
   "placement": {
-    "mode": "smart"
+    "mode": "smart",
   },
   "observability": {
     "enabled": true,
     "logs": {
       "enabled": true,
-      "invocation_logs": true
-    }
+      "invocation_logs": true,
+    },
   },
   "vars": {
-    "BETTER_AUTH_URL": "http://localhost:3000"
+    "BETTER_AUTH_URL": "https://songcal.sh",
   },
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "songcal",
       "database_id": "placeholder-will-be-replaced-after-creation",
-      "migrations_dir": "drizzle/migrations"
-    }
+      "migrations_dir": "drizzle/migrations",
+    },
   ],
   "queues": {
     "producers": [
       {
         "queue": "songcal-sync",
-        "binding": "SYNC_QUEUE"
-      }
+        "binding": "SYNC_QUEUE",
+      },
     ],
     "consumers": [
       {
         "queue": "songcal-sync",
         "max_batch_size": 10,
-        "max_batch_timeout": 30
-      }
-    ]
+        "max_batch_timeout": 30,
+      },
+    ],
   },
   "triggers": {
-    "crons": ["* * * * *"]
-  }
+    "crons": ["* * * * *"],
+  },
 }
-

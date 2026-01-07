@@ -1,29 +1,28 @@
-import { createFileRoute, redirect, useLoaderData } from "@tanstack/react-router"
-import { createServerFn } from "@tanstack/react-start"
-import { getRequestHeaders } from "@tanstack/react-start/server"
-import { CheckCircle, XCircle, Music, Calendar, RefreshCw, Clock } from "lucide-react"
 import { AppleMusicConnect } from "@/components/apple-music-connect"
-import { auth } from "@/lib/auth/server"
+import { redirectIfUnauthenticatedMiddleware } from "@/lib/api/middleware"
 import { db } from "@/lib/db"
 import { appleMusicTokens } from "@/lib/db/schema"
+import { createFileRoute, useLoaderData } from "@tanstack/react-router"
+import { createServerFn } from "@tanstack/react-start"
 import { eq } from "drizzle-orm"
+import { Calendar, CheckCircle, Clock, Music, RefreshCw, XCircle } from "lucide-react"
 
-const getDashboardData = createServerFn({ method: "GET" }).handler(async () => {
-  const headers = getRequestHeaders()
-  const session = await auth.api.getSession({ headers })
-  if (!session?.user) throw redirect({ to: "/" })
+const getDashboardData = createServerFn({ method: "GET" })
+  .middleware([redirectIfUnauthenticatedMiddleware])
+  .handler(async ({ context }) => {
+    const { session } = context
 
-  const token = await db
-    .select({ id: appleMusicTokens.id })
-    .from(appleMusicTokens)
-    .where(eq(appleMusicTokens.userId, session.user.id))
-    .get()
+    const token = await db
+      .select({ id: appleMusicTokens.id })
+      .from(appleMusicTokens)
+      .where(eq(appleMusicTokens.userId, session.user.id))
+      .get()
 
-  return {
-    userEmail: session.user.email,
-    appleMusicConnected: !!token,
-  }
-})
+    return {
+      userEmail: session.user.email,
+      appleMusicConnected: !!token,
+    }
+  })
 
 function DashboardPage() {
   const { userEmail, appleMusicConnected } = useLoaderData({ from: "/dashboard" })

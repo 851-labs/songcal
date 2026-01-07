@@ -15,9 +15,6 @@ logs
 _.log
 report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 
-# Apple private keys
-*.p8
-
 # dotenv environment variable files
 .env
 .env.development.local
