@@ -3,11 +3,21 @@ import type { PlayedTrack } from "./apple-music"
 const GOOGLE_CALENDAR_API = "https://www.googleapis.com/calendar/v3"
 const GOOGLE_OAUTH_TOKEN_URL = "https://oauth2.googleapis.com/token"
 
+interface CalendarListEntry {
+  id: string
+  summary: string
+  accessRole?: string
+  primary?: boolean
+}
+
 interface CalendarListResponse {
-  items?: Array<{
-    id: string
-    summary: string
-  }>
+  items?: CalendarListEntry[]
+}
+
+interface CalendarInfo {
+  id: string
+  name: string
+  primary: boolean
 }
 
 interface CreateEventResponse {
@@ -151,4 +161,34 @@ function formatDuration(ms: number): string {
   return `${minutes}:${seconds.toString().padStart(2, "0")}`
 }
 
-export { refreshAccessToken, getOrCreateCalendar, createCalendarEvent }
+/**
+ * List all calendars the user has write access to
+ */
+async function listCalendars(accessToken: string): Promise<CalendarInfo[]> {
+  const response = await fetch(`${GOOGLE_CALENDAR_API}/users/me/calendarList`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error(`Failed to list calendars: ${response.status}`)
+  }
+
+  const { items }: CalendarListResponse = await response.json()
+
+  // Filter to calendars the user can write to (owner or writer)
+  const writableRoles = ["owner", "writer"]
+  const writableCalendars =
+    items?.filter((cal) => cal.accessRole && writableRoles.includes(cal.accessRole)) ?? []
+
+  return writableCalendars.map((cal) => ({
+    id: cal.id,
+    name: cal.summary,
+    primary: cal.primary ?? false,
+  }))
+}
+
+export { refreshAccessToken, getOrCreateCalendar, createCalendarEvent, listCalendars }
+
+export type { CalendarInfo }

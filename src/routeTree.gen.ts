@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiCronRouteImport } from './routes/api/cron'
+import { Route as ApiCalendarsRouteImport } from './routes/api/calendars'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiAppleMusicTokenRouteImport } from './routes/api/apple-music/token'
 import { Route as ApiAppleMusicConnectRouteImport } from './routes/api/apple-music/connect'
@@ -29,6 +30,11 @@ const IndexRoute = IndexRouteImport.update({
 const ApiCronRoute = ApiCronRouteImport.update({
   id: '/api/cron',
   path: '/api/cron',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCalendarsRoute = ApiCalendarsRouteImport.update({
+  id: '/api/calendars',
+  path: '/api/calendars',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
@@ -50,6 +56,7 @@ const ApiAppleMusicConnectRoute = ApiAppleMusicConnectRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/api/calendars': typeof ApiCalendarsRoute
   '/api/cron': typeof ApiCronRoute
   '/api/apple-music/connect': typeof ApiAppleMusicConnectRoute
   '/api/apple-music/token': typeof ApiAppleMusicTokenRoute
@@ -58,6 +65,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/api/calendars': typeof ApiCalendarsRoute
   '/api/cron': typeof ApiCronRoute
   '/api/apple-music/connect': typeof ApiAppleMusicConnectRoute
   '/api/apple-music/token': typeof ApiAppleMusicTokenRoute
@@ -67,6 +75,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
+  '/api/calendars': typeof ApiCalendarsRoute
   '/api/cron': typeof ApiCronRoute
   '/api/apple-music/connect': typeof ApiAppleMusicConnectRoute
   '/api/apple-music/token': typeof ApiAppleMusicTokenRoute
@@ -77,6 +86,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/dashboard'
+    | '/api/calendars'
     | '/api/cron'
     | '/api/apple-music/connect'
     | '/api/apple-music/token'
@@ -85,6 +95,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/dashboard'
+    | '/api/calendars'
     | '/api/cron'
     | '/api/apple-music/connect'
     | '/api/apple-music/token'
@@ -93,6 +104,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/dashboard'
+    | '/api/calendars'
     | '/api/cron'
     | '/api/apple-music/connect'
     | '/api/apple-music/token'
@@ -102,6 +114,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
+  ApiCalendarsRoute: typeof ApiCalendarsRoute
   ApiCronRoute: typeof ApiCronRoute
   ApiAppleMusicConnectRoute: typeof ApiAppleMusicConnectRoute
   ApiAppleMusicTokenRoute: typeof ApiAppleMusicTokenRoute
@@ -131,6 +144,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCronRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/calendars': {
+      id: '/api/calendars'
+      path: '/api/calendars'
+      fullPath: '/api/calendars'
+      preLoaderRoute: typeof ApiCalendarsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -158,6 +178,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
+  ApiCalendarsRoute: ApiCalendarsRoute,
   ApiCronRoute: ApiCronRoute,
   ApiAppleMusicConnectRoute: ApiAppleMusicConnectRoute,
   ApiAppleMusicTokenRoute: ApiAppleMusicTokenRoute,

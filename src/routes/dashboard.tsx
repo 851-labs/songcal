@@ -1,7 +1,8 @@
 import { AppleMusicConnect } from "@/components/apple-music-connect"
+import { CalendarPicker } from "@/components/calendar-picker"
 import { redirectIfUnauthenticatedMiddleware } from "@/lib/api/middleware"
 import { db } from "@/lib/db"
-import { appleMusicTokens, tracks } from "@/lib/db/schema"
+import { appleMusicTokens, syncState, tracks } from "@/lib/db/schema"
 import { createFileRoute, useLoaderData } from "@tanstack/react-router"
 import { createServerFn } from "@tanstack/react-start"
 import { desc, eq } from "drizzle-orm"
@@ -41,9 +42,17 @@ const getDashboardData = createServerFn({ method: "GET" })
       .limit(10)
       .all()
 
+    // Get user's calendar selection
+    const userSyncState = await db
+      .select({ calendarId: syncState.calendarId })
+      .from(syncState)
+      .where(eq(syncState.userId, session.user.id))
+      .get()
+
     return {
       userEmail: session.user.email,
       appleMusicConnected: !!token,
+      selectedCalendarId: userSyncState?.calendarId ?? null,
       recentTracks: recentTracksData.map((t) => ({
         name: t.name,
         artist: t.artist,
@@ -53,7 +62,7 @@ const getDashboardData = createServerFn({ method: "GET" })
   })
 
 function DashboardPage() {
-  const { userEmail, appleMusicConnected, recentTracks } = useLoaderData({ from: "/dashboard" })
+  const { userEmail, appleMusicConnected, selectedCalendarId, recentTracks } = useLoaderData({ from: "/dashboard" })
 
   return (
     <main className="max-w-4xl mx-auto px-6 py-12">
@@ -70,8 +79,9 @@ function DashboardPage() {
             <StatusBadge connected={true} />
           </div>
           <h3 className="text-lg font-semibold mb-1">Google Calendar</h3>
-          <p className="text-zinc-400 text-sm mb-4">Connected as {userEmail}</p>
-          <p className="text-xs text-zinc-500">Events sync to a calendar named "Apple Music"</p>
+          <p className="text-zinc-400 text-sm mb-3">Connected as {userEmail}</p>
+          <p className="text-xs text-zinc-500 mb-2">Sync events to:</p>
+          <CalendarPicker initialCalendarId={selectedCalendarId} initialCalendarName={null} />
         </div>
 
         {/* Apple Music Status */}

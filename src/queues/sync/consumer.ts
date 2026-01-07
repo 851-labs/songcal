@@ -6,7 +6,7 @@ import * as schema from "@/lib/db/schema"
 import { env } from "cloudflare:workers"
 import { SyncJobMessage } from "./types"
 
-const CALENDAR_NAME = "Apple Music"
+const DEFAULT_CALENDAR_NAME = "Apple Music"
 
 /**
  * Sync tracks for a single user
@@ -109,8 +109,8 @@ async function syncUserTracks(userId: string): Promise<void> {
       env.GOOGLE_CLIENT_SECRET
     )
 
-    // Get or create calendar
-    const calendarId = await getOrCreateCalendar(accessToken, CALENDAR_NAME)
+    // Use selected calendar or fall back to default "Apple Music" calendar
+    const calendarId = syncState?.calendarId ?? (await getOrCreateCalendar(accessToken, DEFAULT_CALENDAR_NAME))
 
     // Sync each new track
     const now = new Date()
