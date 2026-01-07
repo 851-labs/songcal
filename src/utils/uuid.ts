@@ -6,3 +6,4 @@ const ID_LENGTH = 21
 const generateId = customAlphabet(ALPHABET, ID_LENGTH)
 
 export { generateId }
+
