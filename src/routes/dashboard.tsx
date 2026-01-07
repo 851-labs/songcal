@@ -108,18 +108,6 @@ function DashboardPage() {
         </div>
       </div>
 
-      {/* Sync Status */}
-      <div className="p-6 rounded-2xl bg-midnight-900 border border-midnight-700 mb-12">
-        <div className="flex items-center gap-3 mb-4">
-          <RefreshCw className="w-5 h-5 text-violet-400" />
-          <h3 className="text-lg font-semibold">Sync Status</h3>
-        </div>
-        <div className="flex items-center gap-2 text-zinc-400">
-          <Clock className="w-4 h-4" />
-          <span className="text-sm">Syncs automatically every minute</span>
-        </div>
-      </div>
-
       {/* Recent Tracks */}
       <div>
         <h2 className="text-xl font-semibold mb-4">Recently Synced</h2>
@@ -155,7 +143,7 @@ function DashboardPage() {
       <div className="mt-16 pt-8 border-t border-midnight-700">
         <h2 className="text-xl font-semibold mb-2">Delete Account</h2>
         <p className="text-zinc-400 text-sm mb-4">
-          If you no longer wish to use SongCal, you can permanently delete your account.
+          If you no longer wish to use songcal, you can permanently delete your account.
         </p>
         <button
           onClick={handleDeleteAccount}
