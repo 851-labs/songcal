@@ -8,170 +8,170 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from "./routes/__root";
-import { Route as ApiAppleMusicConnectRouteImport } from "./routes/api/apple-music/connect";
-import { Route as ApiAppleMusicTokenRouteImport } from "./routes/api/apple-music/token";
-import { Route as ApiAuthSplatRouteImport } from "./routes/api/auth/$";
-import { Route as ApiCalendarsRouteImport } from "./routes/api/calendars";
-import { Route as ApiCronRouteImport } from "./routes/api/cron";
-import { Route as DashboardRouteImport } from "./routes/dashboard";
-import { Route as IndexRouteImport } from "./routes/index";
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiCronRouteImport } from './routes/api/cron'
+import { Route as ApiCalendarsRouteImport } from './routes/api/calendars'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ApiAppleMusicTokenRouteImport } from './routes/api/apple-music/token'
+import { Route as ApiAppleMusicConnectRouteImport } from './routes/api/apple-music/connect'
 
 const DashboardRoute = DashboardRouteImport.update({
-  id: "/dashboard",
-  path: "/dashboard",
+  id: '/dashboard',
+  path: '/dashboard',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const IndexRoute = IndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiCronRoute = ApiCronRouteImport.update({
-  id: "/api/cron",
-  path: "/api/cron",
+  id: '/api/cron',
+  path: '/api/cron',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiCalendarsRoute = ApiCalendarsRouteImport.update({
-  id: "/api/calendars",
-  path: "/api/calendars",
+  id: '/api/calendars',
+  path: '/api/calendars',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
-  id: "/api/auth/$",
-  path: "/api/auth/$",
+  id: '/api/auth/$',
+  path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiAppleMusicTokenRoute = ApiAppleMusicTokenRouteImport.update({
-  id: "/api/apple-music/token",
-  path: "/api/apple-music/token",
+  id: '/api/apple-music/token',
+  path: '/api/apple-music/token',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiAppleMusicConnectRoute = ApiAppleMusicConnectRouteImport.update({
-  id: "/api/apple-music/connect",
-  path: "/api/apple-music/connect",
+  id: '/api/apple-music/connect',
+  path: '/api/apple-music/connect',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 
 export interface FileRoutesByFullPath {
-  "/": typeof IndexRoute;
-  "/dashboard": typeof DashboardRoute;
-  "/api/calendars": typeof ApiCalendarsRoute;
-  "/api/cron": typeof ApiCronRoute;
-  "/api/apple-music/connect": typeof ApiAppleMusicConnectRoute;
-  "/api/apple-music/token": typeof ApiAppleMusicTokenRoute;
-  "/api/auth/$": typeof ApiAuthSplatRoute;
+  '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
+  '/api/calendars': typeof ApiCalendarsRoute
+  '/api/cron': typeof ApiCronRoute
+  '/api/apple-music/connect': typeof ApiAppleMusicConnectRoute
+  '/api/apple-music/token': typeof ApiAppleMusicTokenRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesByTo {
-  "/": typeof IndexRoute;
-  "/dashboard": typeof DashboardRoute;
-  "/api/calendars": typeof ApiCalendarsRoute;
-  "/api/cron": typeof ApiCronRoute;
-  "/api/apple-music/connect": typeof ApiAppleMusicConnectRoute;
-  "/api/apple-music/token": typeof ApiAppleMusicTokenRoute;
-  "/api/auth/$": typeof ApiAuthSplatRoute;
+  '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
+  '/api/calendars': typeof ApiCalendarsRoute
+  '/api/cron': typeof ApiCronRoute
+  '/api/apple-music/connect': typeof ApiAppleMusicConnectRoute
+  '/api/apple-music/token': typeof ApiAppleMusicTokenRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport;
-  "/": typeof IndexRoute;
-  "/dashboard": typeof DashboardRoute;
-  "/api/calendars": typeof ApiCalendarsRoute;
-  "/api/cron": typeof ApiCronRoute;
-  "/api/apple-music/connect": typeof ApiAppleMusicConnectRoute;
-  "/api/apple-music/token": typeof ApiAppleMusicTokenRoute;
-  "/api/auth/$": typeof ApiAuthSplatRoute;
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/dashboard': typeof DashboardRoute
+  '/api/calendars': typeof ApiCalendarsRoute
+  '/api/cron': typeof ApiCronRoute
+  '/api/apple-music/connect': typeof ApiAppleMusicConnectRoute
+  '/api/apple-music/token': typeof ApiAppleMusicTokenRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
+  fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | "/"
-    | "/dashboard"
-    | "/api/calendars"
-    | "/api/cron"
-    | "/api/apple-music/connect"
-    | "/api/apple-music/token"
-    | "/api/auth/$";
-  fileRoutesByTo: FileRoutesByTo;
+    | '/'
+    | '/dashboard'
+    | '/api/calendars'
+    | '/api/cron'
+    | '/api/apple-music/connect'
+    | '/api/apple-music/token'
+    | '/api/auth/$'
+  fileRoutesByTo: FileRoutesByTo
   to:
-    | "/"
-    | "/dashboard"
-    | "/api/calendars"
-    | "/api/cron"
-    | "/api/apple-music/connect"
-    | "/api/apple-music/token"
-    | "/api/auth/$";
+    | '/'
+    | '/dashboard'
+    | '/api/calendars'
+    | '/api/cron'
+    | '/api/apple-music/connect'
+    | '/api/apple-music/token'
+    | '/api/auth/$'
   id:
-    | "__root__"
-    | "/"
-    | "/dashboard"
-    | "/api/calendars"
-    | "/api/cron"
-    | "/api/apple-music/connect"
-    | "/api/apple-music/token"
-    | "/api/auth/$";
-  fileRoutesById: FileRoutesById;
+    | '__root__'
+    | '/'
+    | '/dashboard'
+    | '/api/calendars'
+    | '/api/cron'
+    | '/api/apple-music/connect'
+    | '/api/apple-music/token'
+    | '/api/auth/$'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  DashboardRoute: typeof DashboardRoute;
-  ApiCalendarsRoute: typeof ApiCalendarsRoute;
-  ApiCronRoute: typeof ApiCronRoute;
-  ApiAppleMusicConnectRoute: typeof ApiAppleMusicConnectRoute;
-  ApiAppleMusicTokenRoute: typeof ApiAppleMusicTokenRoute;
-  ApiAuthSplatRoute: typeof ApiAuthSplatRoute;
+  IndexRoute: typeof IndexRoute
+  DashboardRoute: typeof DashboardRoute
+  ApiCalendarsRoute: typeof ApiCalendarsRoute
+  ApiCronRoute: typeof ApiCronRoute
+  ApiAppleMusicConnectRoute: typeof ApiAppleMusicConnectRoute
+  ApiAppleMusicTokenRoute: typeof ApiAppleMusicTokenRoute
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    "/dashboard": {
-      id: "/dashboard";
-      path: "/dashboard";
-      fullPath: "/dashboard";
-      preLoaderRoute: typeof DashboardRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/": {
-      id: "/";
-      path: "/";
-      fullPath: "/";
-      preLoaderRoute: typeof IndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/cron": {
-      id: "/api/cron";
-      path: "/api/cron";
-      fullPath: "/api/cron";
-      preLoaderRoute: typeof ApiCronRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/calendars": {
-      id: "/api/calendars";
-      path: "/api/calendars";
-      fullPath: "/api/calendars";
-      preLoaderRoute: typeof ApiCalendarsRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/auth/$": {
-      id: "/api/auth/$";
-      path: "/api/auth/$";
-      fullPath: "/api/auth/$";
-      preLoaderRoute: typeof ApiAuthSplatRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/apple-music/token": {
-      id: "/api/apple-music/token";
-      path: "/api/apple-music/token";
-      fullPath: "/api/apple-music/token";
-      preLoaderRoute: typeof ApiAppleMusicTokenRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/apple-music/connect": {
-      id: "/api/apple-music/connect";
-      path: "/api/apple-music/connect";
-      fullPath: "/api/apple-music/connect";
-      preLoaderRoute: typeof ApiAppleMusicConnectRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron': {
+      id: '/api/cron'
+      path: '/api/cron'
+      fullPath: '/api/cron'
+      preLoaderRoute: typeof ApiCronRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/calendars': {
+      id: '/api/calendars'
+      path: '/api/calendars'
+      fullPath: '/api/calendars'
+      preLoaderRoute: typeof ApiCalendarsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/apple-music/token': {
+      id: '/api/apple-music/token'
+      path: '/api/apple-music/token'
+      fullPath: '/api/apple-music/token'
+      preLoaderRoute: typeof ApiAppleMusicTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/apple-music/connect': {
+      id: '/api/apple-music/connect'
+      path: '/api/apple-music/connect'
+      fullPath: '/api/apple-music/connect'
+      preLoaderRoute: typeof ApiAppleMusicConnectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -183,17 +183,16 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAppleMusicConnectRoute: ApiAppleMusicConnectRoute,
   ApiAppleMusicTokenRoute: ApiAppleMusicTokenRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
-};
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()
 
-import type { createStart } from "@tanstack/react-start";
-
-import type { getRouter } from "./router.tsx";
-declare module "@tanstack/react-start" {
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
   interface Register {
-    ssr: true;
-    router: Awaited<ReturnType<typeof getRouter>>;
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
   }
 }
