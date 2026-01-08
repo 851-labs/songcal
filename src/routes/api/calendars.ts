@@ -20,11 +20,7 @@ const Route = createFileRoute("/api/calendars")({
           }
 
           // Get user's Google account
-          const googleAccount = await db
-            .select()
-            .from(accounts)
-            .where(eq(accounts.userId, session.user.id))
-            .get()
+          const googleAccount = await db.select().from(accounts).where(eq(accounts.userId, session.user.id)).get()
 
           if (!googleAccount?.refreshToken) {
             return Response.json({ error: "No Google account linked" }, { status: 400 })
@@ -71,17 +67,10 @@ const Route = createFileRoute("/api/calendars")({
           const { calendarId } = body as { calendarId: string | null }
 
           // Upsert sync state with calendar selection
-          const existing = await db
-            .select()
-            .from(syncState)
-            .where(eq(syncState.userId, session.user.id))
-            .get()
+          const existing = await db.select().from(syncState).where(eq(syncState.userId, session.user.id)).get()
 
           if (existing) {
-            await db
-              .update(syncState)
-              .set({ calendarId })
-              .where(eq(syncState.userId, session.user.id))
+            await db.update(syncState).set({ calendarId }).where(eq(syncState.userId, session.user.id))
           } else {
             await db.insert(syncState).values({
               userId: session.user.id,
@@ -101,4 +90,3 @@ const Route = createFileRoute("/api/calendars")({
 })
 
 export { Route }
-

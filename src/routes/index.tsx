@@ -14,7 +14,7 @@ function LandingPage() {
       {/* Hero Section */}
       <section className="relative overflow-hidden">
         {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-violet-600/10 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-b from-violet-600/10 via-transparent to-transparent" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-violet-500/20 rounded-full blur-3xl opacity-30" />
 
         <div className="relative max-w-4xl mx-auto px-6 pt-24 pb-32 text-center">
@@ -26,7 +26,7 @@ function LandingPage() {
           <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6">
             Your music history,
             <br />
-            <span className="bg-gradient-to-r from-violet-400 via-rose-400 to-amber-400 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-violet-400 via-rose-400 to-amber-400 bg-clip-text text-transparent">
               on your calendar
             </span>
           </h1>

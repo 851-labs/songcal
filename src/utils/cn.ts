@@ -5,4 +5,3 @@ function cn(...inputs: ClassValue[]) {
 }
 
 export { cn }
-

@@ -10,4 +10,3 @@ function formatRelativeTime(date: Date): string {
 }
 
 export { formatRelativeTime }
-
