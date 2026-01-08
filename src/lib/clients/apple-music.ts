@@ -1,32 +1,32 @@
-import { SignJWT, importPKCS8 } from "jose"
+import { SignJWT, importPKCS8 } from "jose";
 
-const APPLE_MUSIC_API_URL = "https://api.music.apple.com"
+const APPLE_MUSIC_API_URL = "https://api.music.apple.com";
 
 interface RecentlyPlayedResponse {
   data: Array<{
-    id: string
-    type: string
-    href: string
+    id: string;
+    type: string;
+    href: string;
     attributes: {
-      name: string
-      artistName?: string
-      albumName?: string
-      durationInMillis?: number
+      name: string;
+      artistName?: string;
+      albumName?: string;
+      durationInMillis?: number;
       artwork?: {
-        url: string
-      }
-    }
-  }>
+        url: string;
+      };
+    };
+  }>;
 }
 
 interface PlayedTrack {
-  id: string
-  type: string
-  name: string
-  artistName: string
-  albumName: string
-  durationMs: number
-  data: Record<string, unknown>
+  id: string;
+  type: string;
+  name: string;
+  artistName: string;
+  albumName: string;
+  durationMs: number;
+  data: Record<string, unknown>;
 }
 
 /**
@@ -35,21 +35,21 @@ interface PlayedTrack {
 async function generateDeveloperToken(
   teamId: string,
   keyId: string,
-  privateKey: string
+  privateKey: string,
 ): Promise<string> {
-  const now = Math.floor(Date.now() / 1000)
-  const expiry = now + 3600 // 1 hour
+  const now = Math.floor(Date.now() / 1000);
+  const expiry = now + 3600; // 1 hour
 
-  const key = await importPKCS8(privateKey, "ES256")
+  const key = await importPKCS8(privateKey, "ES256");
 
   const token = await new SignJWT({})
     .setProtectedHeader({ alg: "ES256", kid: keyId })
     .setIssuer(teamId)
     .setIssuedAt(now)
     .setExpirationTime(expiry)
-    .sign(key)
+    .sign(key);
 
-  return token
+  return token;
 }
 
 /**
@@ -57,24 +57,21 @@ async function generateDeveloperToken(
  */
 async function getRecentlyPlayed(
   developerToken: string,
-  userToken: string
+  userToken: string,
 ): Promise<PlayedTrack[]> {
-  const response = await fetch(
-    `${APPLE_MUSIC_API_URL}/v1/me/recent/played/tracks?limit=10`,
-    {
-      headers: {
-        Authorization: `Bearer ${developerToken}`,
-        "Music-User-Token": userToken,
-      },
-    }
-  )
+  const response = await fetch(`${APPLE_MUSIC_API_URL}/v1/me/recent/played/tracks?limit=10`, {
+    headers: {
+      Authorization: `Bearer ${developerToken}`,
+      "Music-User-Token": userToken,
+    },
+  });
 
   if (!response.ok) {
-    const text = await response.text()
-    throw new Error(`Apple Music API error: ${response.status} - ${text}`)
+    const text = await response.text();
+    throw new Error(`Apple Music API error: ${response.status} - ${text}`);
   }
 
-  const data: RecentlyPlayedResponse = await response.json()
+  const data: RecentlyPlayedResponse = await response.json();
 
   return data.data.map((item) => ({
     id: item.id,
@@ -84,9 +81,8 @@ async function getRecentlyPlayed(
     albumName: item.attributes.albumName || "Unknown Album",
     durationMs: item.attributes.durationInMillis || 0,
     data: item as Record<string, unknown>,
-  }))
+  }));
 }
 
-export { generateDeveloperToken, getRecentlyPlayed }
-export type { PlayedTrack }
-
+export { generateDeveloperToken, getRecentlyPlayed };
+export type { PlayedTrack };

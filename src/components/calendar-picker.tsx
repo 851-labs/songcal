@@ -1,111 +1,101 @@
-import { ChevronDown, Loader2 } from "lucide-react"
-import { useEffect, useState } from "react"
+import { ChevronDown, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface CalendarInfo {
-  id: string
-  name: string
-  primary: boolean
+  id: string;
+  name: string;
+  primary: boolean;
 }
 
 interface CalendarsResponse {
-  calendars: CalendarInfo[]
-  selectedCalendarId: string | null
+  calendars: CalendarInfo[];
+  selectedCalendarId: string | null;
 }
 
 interface CalendarPickerProps {
-  initialCalendarId: string | null
-  initialCalendarName: string | null
+  initialCalendarId: string | null;
+  initialCalendarName: string | null;
 }
 
 function CalendarPicker({ initialCalendarId, initialCalendarName }: CalendarPickerProps) {
-  const [calendars, setCalendars] = useState<CalendarInfo[]>([])
-  const [selectedId, setSelectedId] = useState<string | null>(initialCalendarId)
-  const [selectedName, setSelectedName] = useState<string | null>(initialCalendarName)
-  const [isOpen, setIsOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [isSaving, setIsSaving] = useState(false)
+  const [calendars, setCalendars] = useState<CalendarInfo[]>([]);
+  const [selectedId, setSelectedId] = useState<string | null>(initialCalendarId);
+  const [selectedName, setSelectedName] = useState<string | null>(initialCalendarName);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     async function loadCalendars() {
-      setIsLoading(true)
+      setIsLoading(true);
       try {
-        const response = await fetch("/api/calendars")
+        const response = await fetch("/api/calendars");
         if (response.ok) {
-          const data: CalendarsResponse = await response.json()
+          const data: CalendarsResponse = await response.json();
           // Filter out "Apple Music" calendar since it's covered by the default option
-          const filteredCalendars = data.calendars.filter((c) => c.name !== "Apple Music")
-          setCalendars(filteredCalendars)
+          const filteredCalendars = data.calendars.filter((c) => c.name !== "Apple Music");
+          setCalendars(filteredCalendars);
           if (data.selectedCalendarId) {
-            setSelectedId(data.selectedCalendarId)
-            const cal = data.calendars.find((c) => c.id === data.selectedCalendarId)
-            if (cal) setSelectedName(cal.name)
+            setSelectedId(data.selectedCalendarId);
+            const cal = data.calendars.find((c) => c.id === data.selectedCalendarId);
+            if (cal) setSelectedName(cal.name);
           }
         }
       } catch (error) {
-        console.error("Failed to load calendars:", error)
+        console.error("Failed to load calendars:", error);
       } finally {
-        setIsLoading(false)
+        setIsLoading(false);
       }
     }
 
     if (isOpen && calendars.length === 0) {
-      loadCalendars()
+      loadCalendars();
     }
-  }, [isOpen, calendars.length])
+  }, [isOpen, calendars.length]);
 
   async function handleSelect(calendar: CalendarInfo | null) {
-    setIsSaving(true)
+    setIsSaving(true);
     try {
       const response = await fetch("/api/calendars", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ calendarId: calendar?.id ?? null }),
-      })
+      });
 
       if (response.ok) {
-        setSelectedId(calendar?.id ?? null)
-        setSelectedName(calendar?.name ?? null)
+        setSelectedId(calendar?.id ?? null);
+        setSelectedName(calendar?.name ?? null);
       }
     } catch (error) {
-      console.error("Failed to save calendar selection:", error)
+      console.error("Failed to save calendar selection:", error);
     } finally {
-      setIsSaving(false)
-      setIsOpen(false)
+      setIsSaving(false);
+      setIsOpen(false);
     }
   }
 
-  const displayName = selectedName ?? "Apple Music"
+  const displayName = selectedName ?? "Apple Music";
 
   return (
     <div className="relative">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        disabled={isSaving}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-midnight-800 border border-midnight-600 hover:border-midnight-500 transition-colors text-sm w-full justify-between disabled:opacity-50"
-      >
-        <span className="truncate text-zinc-300">{displayName}</span>
-        {isSaving ? (
-          <Loader2 className="w-4 h-4 text-zinc-400 animate-spin flex-shrink-0" />
-        ) : (
-          <ChevronDown className="w-4 h-4 text-zinc-400 flex-shrink-0" />
-        )}
+      <button onClick={() => setIsOpen(!isOpen)} disabled={isSaving} className="">
+        <span className="">{displayName}</span>
+        {isSaving ? <Loader2 className="" /> : <ChevronDown className="" />}
       </button>
 
       {isOpen && (
         <>
-          <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
-          <div className="absolute top-full left-0 right-0 mt-2 py-1 rounded-lg bg-midnight-800 border border-midnight-600 shadow-xl z-20 max-h-64 overflow-y-auto">
+          <div className="" onClick={() => setIsOpen(false)} />
+          <div className="">
             {isLoading ? (
-              <div className="px-3 py-4 flex items-center justify-center">
-                <Loader2 className="w-5 h-5 text-zinc-400 animate-spin" />
+              <div className="">
+                <Loader2 className="" />
               </div>
             ) : (
               <>
                 <button
                   onClick={() => handleSelect(null)}
-                  className={`w-full px-3 py-2 text-left text-sm hover:bg-midnight-700 transition-colors ${
-                    selectedId === null ? "text-emerald-400" : "text-zinc-300"
-                  }`}
+                  className={` ${selectedId === null ? "text-emerald-400" : "text-zinc-300"}`}
                 >
                   Apple Music
                 </button>
@@ -113,12 +103,12 @@ function CalendarPicker({ initialCalendarId, initialCalendarName }: CalendarPick
                   <button
                     key={calendar.id}
                     onClick={() => handleSelect(calendar)}
-                    className={`w-full px-3 py-2 text-left text-sm hover:bg-midnight-700 transition-colors ${
+                    className={` ${
                       selectedId === calendar.id ? "text-emerald-400" : "text-zinc-300"
                     }`}
                   >
                     {calendar.name}
-                    {calendar.primary && <span className="text-zinc-500 ml-2">(Primary)</span>}
+                    {calendar.primary && <span className="">(Primary)</span>}
                   </button>
                 ))}
               </>
@@ -127,8 +117,7 @@ function CalendarPicker({ initialCalendarId, initialCalendarName }: CalendarPick
         </>
       )}
     </div>
-  )
+  );
 }
 
-export { CalendarPicker }
-
+export { CalendarPicker };

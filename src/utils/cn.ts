@@ -1,7 +1,7 @@
-import { clsx, type ClassValue } from "clsx"
+import { clsx, type ClassValue } from "clsx";
 
 function cn(...inputs: ClassValue[]) {
-  return clsx(inputs)
+  return clsx(inputs);
 }
 
-export { cn }
+export { cn };

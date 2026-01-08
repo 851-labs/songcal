@@ -3,6 +3,6 @@
   "experimentalSortImports": {},
   "experimentalSortPackageJson": true,
   "experimentalTailwindcss": {
-    "functions": ["cn"]
-  }
+    "functions": ["cn"],
+  },
 }

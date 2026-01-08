@@ -1,8 +1,8 @@
 {
   "name": "songcal",
   "version": "2.0.0",
-  "description": "Sync Apple Music listening history to Google Calendar",
   "private": true,
+  "description": "Sync Apple Music listening history to Google Calendar",
   "type": "module",
   "scripts": {
     "dev": "vite dev --port 3000",
@@ -11,7 +11,7 @@
     "deploy": "bun run build && wrangler deploy",
     "format": "oxfmt --check",
     "format:fix": "oxfmt",
-    "types:check": "tsc --noEmit",
+    "types": "tsc --noEmit",
     "types:generate": "wrangler types",
     "db:migrations:generate": "drizzle-kit generate",
     "db:migrations:list": "wrangler d1 migrations list DB --local",
@@ -40,6 +40,8 @@
     "zod": "^4.3.5"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.3.0",
+    "@commitlint/config-conventional": "^20.3.0",
     "@types/apple-music-api": "^0.4.4",
     "@types/musickit-js": "^1.0.10",
     "@types/node": "^25.0.3",
@@ -47,6 +49,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.2",
     "drizzle-kit": "^0.31.8",
+    "lefthook": "^2.0.13",
     "oxfmt": "^0.23.0",
     "typescript": "^5.9.3",
     "vite": "^7.3.0"

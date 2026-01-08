@@ -1,6 +1,7 @@
-import { HeadContent, Scripts, createRootRoute, Outlet } from "@tanstack/react-router"
-import { Header } from "../components/header"
-import appCss from "../styles.css?url"
+import { HeadContent, Scripts, createRootRoute, Outlet } from "@tanstack/react-router";
+
+import { Header } from "../components/header";
+import appCss from "../styles.css?url";
 
 const Route = createRootRoute({
   head: () => ({
@@ -10,7 +11,8 @@ const Route = createRootRoute({
       { title: "songcal - Sync Apple Music to Google Calendar" },
       {
         name: "description",
-        content: "Automatically sync your Apple Music listening history to Google Calendar. See what you listened to, when you listened to it.",
+        content:
+          "Automatically sync your Apple Music listening history to Google Calendar. See what you listened to, when you listened to it.",
       },
     ],
     links: [
@@ -29,7 +31,7 @@ const Route = createRootRoute({
     ],
   }),
   component: RootComponent,
-})
+});
 
 function RootComponent() {
   return (
@@ -37,14 +39,13 @@ function RootComponent() {
       <head>
         <HeadContent />
       </head>
-      <body className="bg-midnight-950 text-white min-h-screen antialiased">
+      <body className="">
         <Header />
         <Outlet />
         <Scripts />
       </body>
     </html>
-  )
+  );
 }
 
-export { Route }
-
+export { Route };

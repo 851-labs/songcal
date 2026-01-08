@@ -1,9 +1,11 @@
-import { betterAuth } from "better-auth"
-import { drizzleAdapter } from "better-auth/adapters/drizzle"
-import { tanstackStartCookies } from "better-auth/tanstack-start"
-import { env, waitUntil } from "cloudflare:workers"
-import { db } from "../db"
-import { generateId } from "@/utils/uuid"
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { tanstackStartCookies } from "better-auth/tanstack-start";
+import { env, waitUntil } from "cloudflare:workers";
+
+import { generateId } from "@/utils/uuid";
+
+import { db } from "../db";
 
 const auth = betterAuth({
   baseURL: env.BETTER_AUTH_URL,
@@ -31,6 +33,6 @@ const auth = betterAuth({
       handler: waitUntil,
     },
   },
-})
+});
 
-export { auth }
+export { auth };

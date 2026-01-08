@@ -1,8 +1,7 @@
-import { accountRouter } from "./procedures/account"
+import { accountRouter } from "./procedures/account";
 
 const api = {
   account: accountRouter,
-}
+};
 
-export { api }
-
+export { api };

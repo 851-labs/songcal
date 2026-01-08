@@ -1,5 +1,5 @@
 interface SyncJobMessage {
-  userId: string
+  userId: string;
 }
 
-export type { SyncJobMessage }
+export type { SyncJobMessage };
