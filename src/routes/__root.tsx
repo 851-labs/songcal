@@ -39,7 +39,7 @@ function RootComponent() {
       <head>
         <HeadContent />
       </head>
-      <body className="">
+      <body className="bg-midnight-950 text-white min-h-screen antialiased">
         <Header />
         <Outlet />
         <Scripts />

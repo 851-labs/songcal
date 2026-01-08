@@ -3,7 +3,4 @@
   "ignorePatterns": ["**/*.gen.ts"],
   "experimentalSortImports": {},
   "experimentalSortPackageJson": true,
-  "experimentalTailwindcss": {
-    "functions": ["cn"],
-  },
 }

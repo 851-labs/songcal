@@ -78,24 +78,34 @@ function CalendarPicker({ initialCalendarId, initialCalendarName }: CalendarPick
 
   return (
     <div className="relative">
-      <button onClick={() => setIsOpen(!isOpen)} disabled={isSaving} className="">
-        <span className="">{displayName}</span>
-        {isSaving ? <Loader2 className="" /> : <ChevronDown className="" />}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        disabled={isSaving}
+        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-midnight-800 border border-midnight-600 hover:border-midnight-500 transition-colors text-sm w-full justify-between disabled:opacity-50"
+      >
+        <span className="truncate text-zinc-300">{displayName}</span>
+        {isSaving ? (
+          <Loader2 className="w-4 h-4 text-zinc-400 animate-spin flex-shrink-0" />
+        ) : (
+          <ChevronDown className="w-4 h-4 text-zinc-400 flex-shrink-0" />
+        )}
       </button>
 
       {isOpen && (
         <>
-          <div className="" onClick={() => setIsOpen(false)} />
-          <div className="">
+          <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
+          <div className="absolute top-full left-0 right-0 mt-2 py-1 rounded-lg bg-midnight-800 border border-midnight-600 shadow-xl z-20 max-h-64 overflow-y-auto">
             {isLoading ? (
-              <div className="">
-                <Loader2 className="" />
+              <div className="px-3 py-4 flex items-center justify-center">
+                <Loader2 className="w-5 h-5 text-zinc-400 animate-spin" />
               </div>
             ) : (
               <>
                 <button
                   onClick={() => handleSelect(null)}
-                  className={` ${selectedId === null ? "text-emerald-400" : "text-zinc-300"}`}
+                  className={`w-full px-3 py-2 text-left text-sm hover:bg-midnight-700 transition-colors ${
+                    selectedId === null ? "text-emerald-400" : "text-zinc-300"
+                  }`}
                 >
                   Apple Music
                 </button>
@@ -103,12 +113,12 @@ function CalendarPicker({ initialCalendarId, initialCalendarName }: CalendarPick
                   <button
                     key={calendar.id}
                     onClick={() => handleSelect(calendar)}
-                    className={` ${
+                    className={`w-full px-3 py-2 text-left text-sm hover:bg-midnight-700 transition-colors ${
                       selectedId === calendar.id ? "text-emerald-400" : "text-zinc-300"
                     }`}
                   >
                     {calendar.name}
-                    {calendar.primary && <span className="">(Primary)</span>}
+                    {calendar.primary && <span className="text-zinc-500 ml-2">(Primary)</span>}
                   </button>
                 ))}
               </>

@@ -52,20 +52,24 @@ function AppleMusicConnect() {
 
   return (
     <div>
-      <button onClick={handleConnect} disabled={isConnecting} className="">
+      <button
+        onClick={handleConnect}
+        disabled={isConnecting}
+        className="inline-flex items-center gap-2 px-4 py-2 bg-rose-600 hover:bg-rose-500 disabled:bg-rose-600/50 rounded-lg font-medium text-sm transition-colors cursor-pointer disabled:cursor-not-allowed"
+      >
         {isConnecting ? (
           <>
-            <Loader2 className="" />
+            <Loader2 className="w-4 h-4 animate-spin" />
             Connecting...
           </>
         ) : (
           <>
-            <Music className="" />
+            <Music className="w-4 h-4" />
             Connect Apple Music
           </>
         )}
       </button>
-      {error && <p className="">{error}</p>}
+      {error && <p className="text-sm text-rose-400 mt-2">{error}</p>}
     </div>
   );
 }
