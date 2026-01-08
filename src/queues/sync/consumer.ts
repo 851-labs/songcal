@@ -151,6 +151,7 @@ async function syncUserTracks(userId: string): Promise<void> {
           name: track.name,
           artistName: track.artistName,
           albumName: track.albumName,
+          artworkUrl: track.artworkUrl,
           durationMs: track.durationMs,
           data: JSON.stringify(track.data),
           playedAt: now,

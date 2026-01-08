@@ -15,6 +15,13 @@
       "when": 1767762885288,
       "tag": "0001_aberrant_union_jack",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1767857917478,
+      "tag": "0002_shallow_trish_tilby",
+      "breakpoints": true
     }
   ]
 }

@@ -15,6 +15,7 @@ declare namespace Cloudflare {
     GOOGLE_CLIENT_SECRET: string;
     DB: D1Database;
     SYNC_QUEUE: Queue;
+    BACKFILL_ARTWORK_WORKFLOW: Workflow;
   }
 }
 interface Env extends Cloudflare.Env {}

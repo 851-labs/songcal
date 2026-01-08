@@ -25,6 +25,7 @@ interface PlayedTrack {
   name: string;
   artistName: string;
   albumName: string;
+  artworkUrl: string | null;
   durationMs: number;
   data: Record<string, unknown>;
 }
@@ -73,15 +74,25 @@ async function getRecentlyPlayed(
 
   const data: RecentlyPlayedResponse = await response.json();
 
-  return data.data.map((item) => ({
-    id: item.id,
-    type: item.type,
-    name: item.attributes.name,
-    artistName: item.attributes.artistName || "Unknown Artist",
-    albumName: item.attributes.albumName || "Unknown Album",
-    durationMs: item.attributes.durationInMillis || 0,
-    data: item as Record<string, unknown>,
-  }));
+  return data.data.map((item) => {
+    // Apple Music artwork URLs have {w} and {h} placeholders
+    // Replace with 100x100 for display in the list
+    const rawArtworkUrl = item.attributes.artwork?.url;
+    const artworkUrl = rawArtworkUrl
+      ? rawArtworkUrl.replace("{w}", "100").replace("{h}", "100")
+      : null;
+
+    return {
+      id: item.id,
+      type: item.type,
+      name: item.attributes.name,
+      artistName: item.attributes.artistName || "Unknown Artist",
+      albumName: item.attributes.albumName || "Unknown Album",
+      artworkUrl,
+      durationMs: item.attributes.durationInMillis || 0,
+      data: item as Record<string, unknown>,
+    };
+  });
 }
 
 export { generateDeveloperToken, getRecentlyPlayed };
