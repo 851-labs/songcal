@@ -1,15 +1,12 @@
 import { ChevronDown, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { api } from "@/lib/api";
+
 interface CalendarInfo {
   id: string;
   name: string;
   primary: boolean;
-}
-
-interface CalendarsResponse {
-  calendars: CalendarInfo[];
-  selectedCalendarId: string | null;
 }
 
 interface CalendarPickerProps {
@@ -29,17 +26,14 @@ function CalendarPicker({ initialCalendarId, initialCalendarName }: CalendarPick
     async function loadCalendars() {
       setIsLoading(true);
       try {
-        const response = await fetch("/api/calendars");
-        if (response.ok) {
-          const data: CalendarsResponse = await response.json();
-          // Filter out "Apple Music" calendar since it's covered by the default option
-          const filteredCalendars = data.calendars.filter((c) => c.name !== "Apple Music");
-          setCalendars(filteredCalendars);
-          if (data.selectedCalendarId) {
-            setSelectedId(data.selectedCalendarId);
-            const cal = data.calendars.find((c) => c.id === data.selectedCalendarId);
-            if (cal) setSelectedName(cal.name);
-          }
+        const data = await api.calendars.list();
+        // Filter out "Apple Music" calendar since it's covered by the default option
+        const filteredCalendars = data.calendars.filter((c) => c.name !== "Apple Music");
+        setCalendars(filteredCalendars);
+        if (data.selectedCalendarId) {
+          setSelectedId(data.selectedCalendarId);
+          const cal = data.calendars.find((c) => c.id === data.selectedCalendarId);
+          if (cal) setSelectedName(cal.name);
         }
       } catch (error) {
         console.error("Failed to load calendars:", error);
@@ -56,16 +50,9 @@ function CalendarPicker({ initialCalendarId, initialCalendarName }: CalendarPick
   async function handleSelect(calendar: CalendarInfo | null) {
     setIsSaving(true);
     try {
-      const response = await fetch("/api/calendars", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ calendarId: calendar?.id ?? null }),
-      });
-
-      if (response.ok) {
-        setSelectedId(calendar?.id ?? null);
-        setSelectedName(calendar?.name ?? null);
-      }
+      await api.calendars.select({ data: { calendarId: calendar?.id ?? null } });
+      setSelectedId(calendar?.id ?? null);
+      setSelectedName(calendar?.name ?? null);
     } catch (error) {
       console.error("Failed to save calendar selection:", error);
     } finally {
@@ -85,9 +72,9 @@ function CalendarPicker({ initialCalendarId, initialCalendarName }: CalendarPick
       >
         <span className="truncate text-zinc-300">{displayName}</span>
         {isSaving ? (
-          <Loader2 className="w-4 h-4 text-zinc-400 animate-spin flex-shrink-0" />
+          <Loader2 className="w-4 h-4 text-zinc-400 animate-spin shrink-0" />
         ) : (
-          <ChevronDown className="w-4 h-4 text-zinc-400 flex-shrink-0" />
+          <ChevronDown className="w-4 h-4 text-zinc-400 shrink-0" />
         )}
       </button>
 
