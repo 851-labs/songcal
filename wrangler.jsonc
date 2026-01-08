@@ -59,11 +59,4 @@
   "triggers": {
     "crons": ["* * * * *"],
   },
-  "workflows": [
-    {
-      "name": "backfill-artwork-workflow",
-      "binding": "BACKFILL_ARTWORK_WORKFLOW",
-      "class_name": "BackfillArtworkWorkflow",
-    },
-  ],
 }

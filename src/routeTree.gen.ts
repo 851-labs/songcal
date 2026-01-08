@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiCronRouteImport } from './routes/api/cron'
-import { Route as ApiWorkflowsBackfillArtworkRouteImport } from './routes/api/workflows/backfill-artwork'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiAppleMusicTokenRouteImport } from './routes/api/apple-music/token'
 import { Route as ApiAppleMusicConnectRouteImport } from './routes/api/apple-music/connect'
@@ -32,12 +31,6 @@ const ApiCronRoute = ApiCronRouteImport.update({
   path: '/api/cron',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiWorkflowsBackfillArtworkRoute =
-  ApiWorkflowsBackfillArtworkRouteImport.update({
-    id: '/api/workflows/backfill-artwork',
-    path: '/api/workflows/backfill-artwork',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -61,7 +54,6 @@ export interface FileRoutesByFullPath {
   '/api/apple-music/connect': typeof ApiAppleMusicConnectRoute
   '/api/apple-music/token': typeof ApiAppleMusicTokenRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/api/workflows/backfill-artwork': typeof ApiWorkflowsBackfillArtworkRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -70,7 +62,6 @@ export interface FileRoutesByTo {
   '/api/apple-music/connect': typeof ApiAppleMusicConnectRoute
   '/api/apple-music/token': typeof ApiAppleMusicTokenRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/api/workflows/backfill-artwork': typeof ApiWorkflowsBackfillArtworkRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -80,7 +71,6 @@ export interface FileRoutesById {
   '/api/apple-music/connect': typeof ApiAppleMusicConnectRoute
   '/api/apple-music/token': typeof ApiAppleMusicTokenRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
-  '/api/workflows/backfill-artwork': typeof ApiWorkflowsBackfillArtworkRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -91,7 +81,6 @@ export interface FileRouteTypes {
     | '/api/apple-music/connect'
     | '/api/apple-music/token'
     | '/api/auth/$'
-    | '/api/workflows/backfill-artwork'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -100,7 +89,6 @@ export interface FileRouteTypes {
     | '/api/apple-music/connect'
     | '/api/apple-music/token'
     | '/api/auth/$'
-    | '/api/workflows/backfill-artwork'
   id:
     | '__root__'
     | '/'
@@ -109,7 +97,6 @@ export interface FileRouteTypes {
     | '/api/apple-music/connect'
     | '/api/apple-music/token'
     | '/api/auth/$'
-    | '/api/workflows/backfill-artwork'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -119,7 +106,6 @@ export interface RootRouteChildren {
   ApiAppleMusicConnectRoute: typeof ApiAppleMusicConnectRoute
   ApiAppleMusicTokenRoute: typeof ApiAppleMusicTokenRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
-  ApiWorkflowsBackfillArtworkRoute: typeof ApiWorkflowsBackfillArtworkRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -143,13 +129,6 @@ declare module '@tanstack/react-router' {
       path: '/api/cron'
       fullPath: '/api/cron'
       preLoaderRoute: typeof ApiCronRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/workflows/backfill-artwork': {
-      id: '/api/workflows/backfill-artwork'
-      path: '/api/workflows/backfill-artwork'
-      fullPath: '/api/workflows/backfill-artwork'
-      preLoaderRoute: typeof ApiWorkflowsBackfillArtworkRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/auth/$': {
@@ -183,7 +162,6 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAppleMusicConnectRoute: ApiAppleMusicConnectRoute,
   ApiAppleMusicTokenRoute: ApiAppleMusicTokenRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
-  ApiWorkflowsBackfillArtworkRoute: ApiWorkflowsBackfillArtworkRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

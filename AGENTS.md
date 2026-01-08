@@ -5,5 +5,5 @@
 - Always write exports at the bottom of the file
 - Never use default exports; use named exports only
 - Use kebab-case for file names
-- Always use db migration scripts for database migrations (never create migration files manually)
+- Always use package.json scripts for database migrations: `bun run db:migrations:*` (never create migration files manually)
 - Avoid barrel export files (index.ts that only re-exports); import directly from source files

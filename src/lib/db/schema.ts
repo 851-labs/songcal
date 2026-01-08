@@ -109,7 +109,7 @@ const tracks = sqliteTable("tracks", {
   name: text("name").notNull(),
   artistName: text("artist_name").notNull(),
   albumName: text("album_name").notNull(),
-  artworkUrl: text("artwork_url"), // Album artwork URL from Apple Music
+  artworkUrl: text("artwork_url").notNull(), // Album artwork URL from Apple Music
   durationMs: integer("duration_ms").notNull(),
   data: text("data"), // JSON string of full Apple Music response
   playedAt: integer("played_at", { mode: "timestamp" }).notNull(),

@@ -3,7 +3,6 @@ import handler, { createServerEntry } from "@tanstack/react-start/server-entry";
 import { consumeSyncJobs } from "./queues/sync/consumer";
 import { produceSyncJobs } from "./queues/sync/producer";
 import { SyncJobMessage } from "./queues/sync/types";
-import { BackfillArtworkWorkflow } from "./workflows/backfill-artwork-workflow";
 
 export default {
   ...createServerEntry({
@@ -28,5 +27,3 @@ export default {
     }
   },
 };
-
-export { BackfillArtworkWorkflow };
