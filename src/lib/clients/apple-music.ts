@@ -25,7 +25,7 @@ interface PlayedTrack {
   name: string;
   artistName: string;
   albumName: string;
-  artworkUrl: string;
+  artworkUrl: string | null;
   durationMs: number;
   data: Record<string, unknown>;
 }
@@ -80,7 +80,7 @@ async function getRecentlyPlayed(
     const rawArtworkUrl = item.attributes.artwork?.url;
     const artworkUrl = rawArtworkUrl
       ? rawArtworkUrl.replace("{w}", "100").replace("{h}", "100")
-      : "";
+      : null;
 
     return {
       id: item.id,
