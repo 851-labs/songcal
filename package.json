@@ -23,6 +23,7 @@
     "cron:trigger": "curl 'http://localhost:3000/cdn-cgi/handler/scheduled?cron=*+*+*+*+*'"
   },
   "dependencies": {
+    "@base-ui/react": "^1.0.0",
     "@cloudflare/vite-plugin": "^1.17.1",
     "@fontsource-variable/figtree": "^5.2.10",
     "@tailwindcss/vite": "^4.1.18",

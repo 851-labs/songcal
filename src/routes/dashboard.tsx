@@ -1,9 +1,19 @@
 import { Link, createFileRoute, useLoaderData, useNavigate } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { AlertTriangle, Calendar, CheckCircle, Music, XCircle } from "lucide-react";
+import { AlertTriangle, Calendar, CheckCircle, LogOut, Music, XCircle } from "lucide-react";
 
 import { AppleMusicConnect } from "@/components/apple-music-connect";
 import { CalendarPicker } from "@/components/calendar-picker";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { api } from "@/lib/api";
 import { redirectIfUnauthenticatedMiddleware } from "@/lib/api/middleware";
 import { authClient } from "@/lib/auth/client";
@@ -65,15 +75,24 @@ function DashboardPage() {
             <span className="font-semibold text-lg">songcal</span>
           </Link>
 
-          <div className="flex items-center gap-3">
-            {userImage && <img src={userImage} alt="" className="w-8 h-8 rounded-full" />}
-            <button
-              onClick={handleSignOut}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-            >
-              Sign out
-            </button>
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="cursor-pointer rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+              <Avatar>
+                <AvatarImage src={userImage ?? undefined} alt="" />
+                <AvatarFallback>{userEmail?.charAt(0).toUpperCase()}</AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>{userEmail}</DropdownMenuLabel>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem variant="destructive" onSelect={handleSignOut}>
+                <LogOut />
+                Sign out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </header>
 
