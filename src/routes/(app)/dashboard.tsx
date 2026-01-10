@@ -25,6 +25,7 @@ import {
   ItemDescription,
   ItemGroup,
   ItemSeparator,
+  ItemActions,
 } from "@/ui/item";
 
 const getDashboardData = createServerFn({ method: "GET" })
@@ -105,46 +106,54 @@ function DashboardPage() {
         </div>
       </header>
 
-      <main className="max-w-4xl mx-auto px-6 py-12">
+      <main className="max-w-3xl mx-auto px-6 py-12">
         <h1 className="text-3xl font-bold mb-8">Dashboard</h1>
 
         {/* Connection Status */}
-        <div className="grid md:grid-cols-2 gap-6 mb-12">
-          {/* Google Calendar Status */}
-          <div className="p-6 rounded-2xl bg-card border border-border">
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center">
-                <Calendar className="w-6 h-6 text-emerald-400" />
-              </div>
-              <StatusBadge connected={true} />
-            </div>
-            <h3 className="text-lg font-semibold mb-1">Google Calendar</h3>
-            <p className="text-muted-foreground text-sm mb-3">Connected as {userEmail}</p>
-            <p className="text-xs text-muted-foreground mb-2">Sync events to:</p>
-            <CalendarPicker initialCalendarId={selectedCalendarId} initialCalendarName={null} />
-          </div>
+        <div className="mb-12">
+          <h2 className="text-xl font-semibold">Connections</h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            Connect your accounts to sync your music listening history.
+          </p>
+          <div className="rounded-2xl bg-card border border-border overflow-hidden">
+            <ItemGroup className="gap-0">
+              {/* Google Calendar */}
+              <Item>
+                <ItemMedia variant="icon">
+                  <Calendar className="w-5 h-5 text-emerald-400" />
+                </ItemMedia>
+                <ItemContent>
+                  <ItemTitle>Google Calendar</ItemTitle>
+                  <ItemDescription>Connected as {userEmail}</ItemDescription>
+                </ItemContent>
+                <ItemActions>
+                  <CalendarPicker
+                    initialCalendarId={selectedCalendarId}
+                    initialCalendarName={null}
+                  />
+                </ItemActions>
+              </Item>
 
-          {/* Apple Music Status */}
-          <div className="p-6 rounded-2xl bg-card border border-border">
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl bg-chart-3/20 flex items-center justify-center">
-                <Music className="w-6 h-6 text-chart-3" />
-              </div>
-              <StatusBadge connected={appleMusicConnected} />
-            </div>
-            <h3 className="text-lg font-semibold mb-1">Apple Music</h3>
-            {appleMusicConnected ? (
-              <p className="text-muted-foreground text-sm">
-                Your listening history is being synced
-              </p>
-            ) : (
-              <>
-                <p className="text-muted-foreground text-sm mb-4">
-                  Connect to start syncing your music
-                </p>
-                <AppleMusicConnect />
-              </>
-            )}
+              <ItemSeparator className="my-0 ml-12" />
+
+              {/* Apple Music */}
+              <Item>
+                <ItemMedia variant="icon">
+                  <Music className="w-5 h-5 text-chart-3" />
+                </ItemMedia>
+                <ItemContent>
+                  <ItemTitle>Apple Music</ItemTitle>
+                  <ItemDescription>
+                    {appleMusicConnected
+                      ? "Your listening history is being synced"
+                      : "Connect to start syncing your music"}
+                  </ItemDescription>
+                </ItemContent>
+                <ItemActions>
+                  {appleMusicConnected ? <StatusBadge connected={true} /> : <AppleMusicConnect />}
+                </ItemActions>
+              </Item>
+            </ItemGroup>
           </div>
         </div>
 
