@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { env } from "cloudflare:workers";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 
 import { listCalendars, refreshAccessToken } from "../../clients/google-calendar";
@@ -14,8 +14,12 @@ const listFn = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     const userId = context.session.user.id;
 
-    // Get user's Google account
-    const googleAccount = await db.select().from(accounts).where(eq(accounts.userId, userId)).get();
+    // Get user's Google account - filter by providerId to ensure we get the correct OAuth provider
+    const googleAccount = await db
+      .select()
+      .from(accounts)
+      .where(and(eq(accounts.userId, userId), eq(accounts.providerId, "google")))
+      .get();
 
     if (!googleAccount?.refreshToken) {
       throw new Error("No Google account linked");

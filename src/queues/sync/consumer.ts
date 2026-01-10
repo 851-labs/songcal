@@ -1,5 +1,5 @@
 import { env } from "cloudflare:workers";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 import { generateDeveloperToken, getRecentlyPlayed } from "@/lib/clients/apple-music";
 import {
@@ -42,10 +42,11 @@ async function syncUserTracks(userId: string): Promise<void> {
   }
 
   // Get user's Google account (for Calendar access)
+  // Filter by both userId and providerId to ensure we get the correct OAuth provider
   const googleAccount = await db
     .select()
     .from(schema.accounts)
-    .where(eq(schema.accounts.userId, userId))
+    .where(and(eq(schema.accounts.userId, userId), eq(schema.accounts.providerId, "google")))
     .get();
 
   if (!googleAccount?.refreshToken) {
