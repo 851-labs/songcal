@@ -1,13 +1,26 @@
 import { Link, createFileRoute, useLoaderData, useNavigate } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { AlertTriangle, Calendar, CheckCircle, LogOut, Music, XCircle } from "lucide-react";
+import { useState } from "react";
 
 import { AppleMusicConnect } from "@/components/apple-music-connect";
 import { CalendarPicker } from "@/components/calendar-picker";
 import { api } from "@/lib/api";
 import { redirectIfUnauthenticatedMiddleware } from "@/lib/api/middleware";
 import { authClient } from "@/lib/auth/client";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/ui/avatar";
+import { Button } from "@/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -49,18 +62,15 @@ const getDashboardData = createServerFn({ method: "GET" })
   });
 
 function DashboardPage() {
+  const navigate = useNavigate();
   const { userEmail, userImage, appleMusicConnected, selectedCalendarId, recentTracks } =
     useLoaderData({
       from: "/(app)/dashboard",
     });
-  const navigate = useNavigate();
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   async function handleDeleteAccount() {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently deleted.",
-    );
-    if (!confirmed) return;
-
     await api.account.delete();
     await authClient.signOut();
     navigate({ to: "/" });
@@ -75,7 +85,7 @@ function DashboardPage() {
     <>
       {/* Dashboard Header */}
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-background/80 border-b border-border">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div className="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between">
           <Link
             to="/"
             className="flex items-center gap-2.5 text-foreground hover:text-primary transition-colors"
@@ -113,9 +123,10 @@ function DashboardPage() {
         {/* Connection Status */}
         <div className="mb-12">
           <h2 className="text-xl font-semibold">Connections</h2>
-          <p className="text-sm text-muted-foreground mb-4">
+          <p className="text-sm text-muted-foreground mb-4 mt-0.5">
             Connect your accounts to sync your music listening history.
           </p>
+
           <div className="rounded-2xl bg-card border border-border overflow-hidden">
             <ItemGroup className="gap-0">
               {/* Google Calendar */}
@@ -159,17 +170,18 @@ function DashboardPage() {
         </div>
 
         {/* Recent Tracks */}
-        <div>
-          <div>
-            <h2 className="text-xl font-semibold inline-flex items-center gap-2">
-              Recently Synced
-              <span className="relative inline-flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
-              </span>
-            </h2>
-            <p className="text-sm mb-4 text-muted-foreground">Syncs automatically every minute</p>
-          </div>
+        <div className="mb-12">
+          <h2 className="text-xl font-semibold inline-flex items-center gap-2">
+            Recently Synced
+            <span className="relative inline-flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+            </span>
+          </h2>
+          <p className="text-sm mb-4 text-muted-foreground mt-0.5">
+            Syncs automatically every minute
+          </p>
+
           {recentTracks.length === 0 ? (
             <div className="p-8 rounded-2xl bg-card border border-border text-center">
               <Music className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
@@ -210,18 +222,33 @@ function DashboardPage() {
         </div>
 
         {/* Delete Account */}
-        <div className="mt-16 pt-8 border-t border-border">
-          <h2 className="text-xl font-semibold mb-2">Delete Account</h2>
-          <p className="text-muted-foreground text-sm mb-4">
+        <div>
+          <h2 className="text-xl font-semibold">Danger Zone</h2>
+          <p className="text-sm text-muted-foreground mb-4 mt-0.5">
             If you no longer wish to use songcal, you can permanently delete your account.
           </p>
-          <button
-            onClick={handleDeleteAccount}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500/30 transition-colors cursor-pointer"
-          >
-            <AlertTriangle className="w-4 h-4" />
-            Delete My Account
-          </button>
+
+          <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+            <AlertDialogTrigger render={<Button variant="destructive" size="lg" />}>
+              <AlertTriangle className="w-4 h-4" data-icon="inline-start" />
+              Delete My Account
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Delete Account</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Are you sure you want to delete your account? This action cannot be undone and all
+                  your data will be permanently deleted.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction variant="destructive" onClick={handleDeleteAccount}>
+                  Delete
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </main>
     </>
