@@ -16,17 +16,6 @@ import { AppleMusicConnect } from "@/components/apple-music-connect";
 import { api } from "@/lib/api";
 import { redirectIfUnauthenticatedMiddleware } from "@/lib/api/middleware";
 import { authClient } from "@/lib/auth/client";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/ui/avatar";
 import { Button } from "@/ui/button";
 import {
@@ -37,6 +26,16 @@ import {
   CommandItem,
   CommandList,
 } from "@/ui/command";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -327,27 +326,27 @@ function DashboardPage() {
             If you no longer wish to use songcal, you can permanently delete your account.
           </p>
 
-          <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-            <AlertDialogTrigger render={<Button variant="destructive" size="lg" />}>
+          <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+            <DialogTrigger render={<Button variant="destructive" size="lg" />}>
               <AlertTriangle className="w-4 h-4" data-icon="inline-start" />
               Delete My Account
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Delete Account</AlertDialogTitle>
-                <AlertDialogDescription>
+            </DialogTrigger>
+            <DialogContent showCloseButton={false}>
+              <DialogHeader>
+                <DialogTitle>Delete Account</DialogTitle>
+                <DialogDescription>
                   Are you sure you want to delete your account? This action cannot be undone and all
                   your data will be permanently deleted.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction variant="destructive" onClick={handleDeleteAccount}>
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <DialogClose render={<Button variant="outline" />}>Cancel</DialogClose>
+                <Button variant="destructive" onClick={handleDeleteAccount}>
                   Delete
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </main>
     </>
