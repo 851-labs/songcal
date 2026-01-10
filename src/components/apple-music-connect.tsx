@@ -55,7 +55,7 @@ function AppleMusicConnect() {
       <button
         onClick={handleConnect}
         disabled={isConnecting}
-        className="inline-flex items-center gap-2 px-4 py-2 bg-rose-600 hover:bg-rose-500 disabled:bg-rose-600/50 rounded-lg font-medium text-sm transition-colors cursor-pointer disabled:cursor-not-allowed"
+        className="inline-flex items-center gap-2 px-4 py-2 bg-chart-3 hover:bg-chart-3/90 text-primary-foreground disabled:bg-chart-3/50 rounded-lg font-medium text-sm transition-colors cursor-pointer disabled:cursor-not-allowed"
       >
         {isConnecting ? (
           <>
@@ -69,7 +69,7 @@ function AppleMusicConnect() {
           </>
         )}
       </button>
-      {error && <p className="text-sm text-rose-400 mt-2">{error}</p>}
+      {error && <p className="text-sm text-destructive mt-2">{error}</p>}
     </div>
   );
 }

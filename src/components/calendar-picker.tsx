@@ -68,30 +68,30 @@ function CalendarPicker({ initialCalendarId, initialCalendarName }: CalendarPick
       <button
         onClick={() => setIsOpen(!isOpen)}
         disabled={isSaving}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-midnight-800 border border-midnight-600 hover:border-midnight-500 transition-colors text-sm w-full justify-between disabled:opacity-50"
+        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-muted border border-border hover:border-primary/50 transition-colors text-sm w-full justify-between disabled:opacity-50"
       >
-        <span className="truncate text-zinc-300">{displayName}</span>
+        <span className="truncate text-foreground">{displayName}</span>
         {isSaving ? (
-          <Loader2 className="w-4 h-4 text-zinc-400 animate-spin shrink-0" />
+          <Loader2 className="w-4 h-4 text-muted-foreground animate-spin shrink-0" />
         ) : (
-          <ChevronDown className="w-4 h-4 text-zinc-400 shrink-0" />
+          <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />
         )}
       </button>
 
       {isOpen && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
-          <div className="absolute top-full left-0 right-0 mt-2 py-1 rounded-lg bg-midnight-800 border border-midnight-600 shadow-xl z-20 max-h-64 overflow-y-auto">
+          <div className="absolute top-full left-0 right-0 mt-2 py-1 rounded-lg bg-popover border border-border shadow-xl z-20 max-h-64 overflow-y-auto">
             {isLoading ? (
               <div className="px-3 py-4 flex items-center justify-center">
-                <Loader2 className="w-5 h-5 text-zinc-400 animate-spin" />
+                <Loader2 className="w-5 h-5 text-muted-foreground animate-spin" />
               </div>
             ) : (
               <>
                 <button
                   onClick={() => handleSelect(null)}
-                  className={`w-full px-3 py-2 text-left text-sm hover:bg-midnight-700 transition-colors ${
-                    selectedId === null ? "text-emerald-400" : "text-zinc-300"
+                  className={`w-full px-3 py-2 text-left text-sm hover:bg-accent transition-colors ${
+                    selectedId === null ? "text-primary" : "text-muted-foreground"
                   }`}
                 >
                   Apple Music
@@ -100,12 +100,14 @@ function CalendarPicker({ initialCalendarId, initialCalendarName }: CalendarPick
                   <button
                     key={calendar.id}
                     onClick={() => handleSelect(calendar)}
-                    className={`w-full px-3 py-2 text-left text-sm hover:bg-midnight-700 transition-colors ${
-                      selectedId === calendar.id ? "text-emerald-400" : "text-zinc-300"
+                    className={`w-full px-3 py-2 text-left text-sm hover:bg-accent transition-colors ${
+                      selectedId === calendar.id ? "text-primary" : "text-muted-foreground"
                     }`}
                   >
                     {calendar.name}
-                    {calendar.primary && <span className="text-zinc-500 ml-2">(Primary)</span>}
+                    {calendar.primary && (
+                      <span className="text-muted-foreground ml-2">(Primary)</span>
+                    )}
                   </button>
                 ))}
               </>

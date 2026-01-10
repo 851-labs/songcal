@@ -51,7 +51,7 @@ function DashboardPage() {
       {/* Connection Status */}
       <div className="grid md:grid-cols-2 gap-6 mb-12">
         {/* Google Calendar Status */}
-        <div className="p-6 rounded-2xl bg-midnight-900 border border-midnight-700">
+        <div className="p-6 rounded-2xl bg-card border border-border">
           <div className="flex items-start justify-between mb-4">
             <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center">
               <Calendar className="w-6 h-6 text-emerald-400" />
@@ -59,25 +59,27 @@ function DashboardPage() {
             <StatusBadge connected={true} />
           </div>
           <h3 className="text-lg font-semibold mb-1">Google Calendar</h3>
-          <p className="text-zinc-400 text-sm mb-3">Connected as {userEmail}</p>
-          <p className="text-xs text-zinc-500 mb-2">Sync events to:</p>
+          <p className="text-muted-foreground text-sm mb-3">Connected as {userEmail}</p>
+          <p className="text-xs text-muted-foreground mb-2">Sync events to:</p>
           <CalendarPicker initialCalendarId={selectedCalendarId} initialCalendarName={null} />
         </div>
 
         {/* Apple Music Status */}
-        <div className="p-6 rounded-2xl bg-midnight-900 border border-midnight-700">
+        <div className="p-6 rounded-2xl bg-card border border-border">
           <div className="flex items-start justify-between mb-4">
-            <div className="w-12 h-12 rounded-xl bg-rose-500/20 flex items-center justify-center">
-              <Music className="w-6 h-6 text-rose-400" />
+            <div className="w-12 h-12 rounded-xl bg-chart-3/20 flex items-center justify-center">
+              <Music className="w-6 h-6 text-chart-3" />
             </div>
             <StatusBadge connected={appleMusicConnected} />
           </div>
           <h3 className="text-lg font-semibold mb-1">Apple Music</h3>
           {appleMusicConnected ? (
-            <p className="text-zinc-400 text-sm">Your listening history is being synced</p>
+            <p className="text-muted-foreground text-sm">Your listening history is being synced</p>
           ) : (
             <>
-              <p className="text-zinc-400 text-sm mb-4">Connect to start syncing your music</p>
+              <p className="text-muted-foreground text-sm mb-4">
+                Connect to start syncing your music
+              </p>
               <AppleMusicConnect />
             </>
           )}
@@ -94,13 +96,13 @@ function DashboardPage() {
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
             </span>
           </h2>
-          <p className="text-sm mb-4 text-zinc-500">Syncs automatically every minute</p>
+          <p className="text-sm mb-4 text-muted-foreground">Syncs automatically every minute</p>
         </div>
         {recentTracks.length === 0 ? (
-          <div className="p-8 rounded-2xl bg-midnight-900 border border-midnight-700 text-center">
-            <Music className="w-10 h-10 text-zinc-600 mx-auto mb-3" />
-            <p className="text-zinc-400">No tracks synced yet</p>
-            <p className="text-sm text-zinc-500 mt-1">
+          <div className="p-8 rounded-2xl bg-card border border-border text-center">
+            <Music className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
+            <p className="text-muted-foreground">No tracks synced yet</p>
+            <p className="text-sm text-muted-foreground mt-1">
               {appleMusicConnected
                 ? "Play some music and tracks will appear here"
                 : "Connect Apple Music to start syncing"}
@@ -111,7 +113,7 @@ function DashboardPage() {
             {recentTracks.map((track, i) => (
               <div
                 key={i}
-                className="p-4 rounded-xl bg-midnight-900 border border-midnight-700 flex items-center gap-4"
+                className="p-4 rounded-xl bg-card border border-border flex items-center gap-4"
               >
                 {track.artworkUrl ? (
                   <img
@@ -120,15 +122,15 @@ function DashboardPage() {
                     className="w-12 h-12 rounded-lg object-cover shrink-0"
                   />
                 ) : (
-                  <div className="w-12 h-12 rounded-lg bg-midnight-700 flex items-center justify-center shrink-0">
-                    <Music className="w-5 h-5 text-zinc-500" />
+                  <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center shrink-0">
+                    <Music className="w-5 h-5 text-muted-foreground" />
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
                   <p className="font-medium truncate">{track.name}</p>
-                  <p className="text-sm text-zinc-400 truncate">{track.artist}</p>
+                  <p className="text-sm text-muted-foreground truncate">{track.artist}</p>
                 </div>
-                <p className="text-xs text-zinc-500 shrink-0">{track.syncedAt}</p>
+                <p className="text-xs text-muted-foreground shrink-0">{track.syncedAt}</p>
               </div>
             ))}
           </div>
@@ -136,9 +138,9 @@ function DashboardPage() {
       </div>
 
       {/* Delete Account */}
-      <div className="mt-16 pt-8 border-t border-midnight-700">
+      <div className="mt-16 pt-8 border-t border-border">
         <h2 className="text-xl font-semibold mb-2">Delete Account</h2>
-        <p className="text-zinc-400 text-sm mb-4">
+        <p className="text-muted-foreground text-sm mb-4">
           If you no longer wish to use songcal, you can permanently delete your account.
         </p>
         <button
@@ -160,7 +162,7 @@ function StatusBadge({ connected }: { connected: boolean }) {
       Connected
     </div>
   ) : (
-    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-zinc-700/50 text-zinc-400 text-xs font-medium">
+    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-muted text-muted-foreground text-xs font-medium">
       <XCircle className="w-3.5 h-3.5" />
       Not connected
     </div>
