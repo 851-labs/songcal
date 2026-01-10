@@ -132,7 +132,7 @@ function DashboardPage() {
               {/* Google Calendar */}
               <Item>
                 <ItemMedia variant="icon">
-                  <Calendar className="w-5 h-5 text-emerald-400" />
+                  <Calendar className="w-5 h-5 text-muted-foreground" />
                 </ItemMedia>
                 <ItemContent>
                   <ItemTitle>Google Calendar</ItemTitle>
@@ -151,7 +151,7 @@ function DashboardPage() {
               {/* Apple Music */}
               <Item>
                 <ItemMedia variant="icon">
-                  <Music className="w-5 h-5 text-chart-3" />
+                  <Music className="w-5 h-5 text-muted-foreground" />
                 </ItemMedia>
                 <ItemContent>
                   <ItemTitle>Apple Music</ItemTitle>
