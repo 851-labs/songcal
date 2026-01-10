@@ -17,6 +17,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/ui/dropdown-menu";
+import {
+  Item,
+  ItemMedia,
+  ItemContent,
+  ItemTitle,
+  ItemDescription,
+  ItemGroup,
+  ItemSeparator,
+} from "@/ui/item";
 
 const getDashboardData = createServerFn({ method: "GET" })
   .middleware([redirectIfUnauthenticatedMiddleware])
@@ -162,30 +171,30 @@ function DashboardPage() {
               </p>
             </div>
           ) : (
-            <div className="space-y-2">
-              {recentTracks.map((track, i) => (
-                <div
-                  key={i}
-                  className="p-4 rounded-xl bg-card border border-border flex items-center gap-4"
-                >
-                  {track.artworkUrl ? (
-                    <img
-                      src={track.artworkUrl}
-                      alt={`${track.name} artwork`}
-                      className="w-12 h-12 rounded-lg object-cover shrink-0"
-                    />
-                  ) : (
-                    <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center shrink-0">
-                      <Music className="w-5 h-5 text-muted-foreground" />
-                    </div>
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium truncate">{track.name}</p>
-                    <p className="text-sm text-muted-foreground truncate">{track.artist}</p>
+            <div className="rounded-2xl bg-card border border-border overflow-hidden">
+              <ItemGroup className="gap-0">
+                {recentTracks.map((track, i) => (
+                  <div key={i}>
+                    {i > 0 && <ItemSeparator className="my-0 ml-18" />}
+                    <Item>
+                      <ItemMedia variant="image">
+                        {track.artworkUrl ? (
+                          <img src={track.artworkUrl} alt={`${track.name} artwork`} />
+                        ) : (
+                          <div className="w-full h-full bg-muted flex items-center justify-center">
+                            <Music className="w-5 h-5 text-muted-foreground" />
+                          </div>
+                        )}
+                      </ItemMedia>
+                      <ItemContent>
+                        <ItemTitle>{track.name}</ItemTitle>
+                        <ItemDescription>{track.artist}</ItemDescription>
+                      </ItemContent>
+                      <p className="text-xs text-muted-foreground shrink-0">{track.syncedAt}</p>
+                    </Item>
                   </div>
-                  <p className="text-xs text-muted-foreground shrink-0">{track.syncedAt}</p>
-                </div>
-              ))}
+                ))}
+              </ItemGroup>
             </div>
           )}
         </div>
