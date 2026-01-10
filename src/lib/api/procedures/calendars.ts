@@ -70,9 +70,24 @@ const select = createServerFn({ method: "POST" })
     return { success: true };
   });
 
+const getSelected = createServerFn({ method: "GET" })
+  .middleware([throwIfUnauthenticatedMiddleware])
+  .handler(async ({ context }) => {
+    const userId = context.session.user.id;
+
+    const userSyncState = await db
+      .select({ calendarId: syncState.calendarId })
+      .from(syncState)
+      .where(eq(syncState.userId, userId))
+      .get();
+
+    return { calendarId: userSyncState?.calendarId ?? null };
+  });
+
 const calendarsRouter = {
   list,
   select,
+  getSelected,
 };
 
 export { calendarsRouter };

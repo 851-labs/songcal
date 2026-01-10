@@ -1,6 +1,5 @@
 import { createFileRoute, useLoaderData, useNavigate } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { desc, eq } from "drizzle-orm";
 import { AlertTriangle, Calendar, CheckCircle, Music, XCircle } from "lucide-react";
 
 import { AppleMusicConnect } from "@/components/apple-music-connect";
@@ -8,51 +7,23 @@ import { CalendarPicker } from "@/components/calendar-picker";
 import { api } from "@/lib/api";
 import { redirectIfUnauthenticatedMiddleware } from "@/lib/api/middleware";
 import { authClient } from "@/lib/auth/client";
-import { db } from "@/lib/db";
-import { appleMusicTokens, syncState, tracks } from "@/lib/db/schema";
-import { formatRelativeTime } from "@/utils/date";
 
 const getDashboardData = createServerFn({ method: "GET" })
   .middleware([redirectIfUnauthenticatedMiddleware])
   .handler(async ({ context }) => {
     const { session } = context;
 
-    const token = await db
-      .select({ id: appleMusicTokens.id })
-      .from(appleMusicTokens)
-      .where(eq(appleMusicTokens.userId, session.user.id))
-      .get();
-
-    const recentTracksData = await db
-      .select({
-        name: tracks.name,
-        artist: tracks.artistName,
-        artworkUrl: tracks.artworkUrl,
-        syncedAt: tracks.createdAt,
-      })
-      .from(tracks)
-      .where(eq(tracks.userId, session.user.id))
-      .orderBy(desc(tracks.createdAt))
-      .limit(10)
-      .all();
-
-    // Get user's calendar selection
-    const userSyncState = await db
-      .select({ calendarId: syncState.calendarId })
-      .from(syncState)
-      .where(eq(syncState.userId, session.user.id))
-      .get();
+    const [appleMusicStatus, recentTracksData, calendarSelection] = await Promise.all([
+      api.appleMusic.getConnectionStatus(),
+      api.tracks.getRecent(),
+      api.calendars.getSelected(),
+    ]);
 
     return {
       userEmail: session.user.email,
-      appleMusicConnected: !!token,
-      selectedCalendarId: userSyncState?.calendarId ?? null,
-      recentTracks: recentTracksData.map((t) => ({
-        name: t.name,
-        artist: t.artist,
-        artworkUrl: t.artworkUrl,
-        syncedAt: formatRelativeTime(t.syncedAt),
-      })),
+      appleMusicConnected: appleMusicStatus.connected,
+      selectedCalendarId: calendarSelection.calendarId,
+      recentTracks: recentTracksData,
     };
   });
 
