@@ -3,9 +3,10 @@ import { eq } from "drizzle-orm";
 
 import { db } from "../../db";
 import { appleMusicTokens } from "../../db/schema";
+import { createQueryProcedure } from "../create-procedure";
 import { throwIfUnauthenticatedMiddleware } from "../middleware";
 
-const getConnectionStatus = createServerFn({ method: "GET" })
+const getConnectionStatusFn = createServerFn({ method: "GET" })
   .middleware([throwIfUnauthenticatedMiddleware])
   .handler(async ({ context }) => {
     const userId = context.session.user.id;
@@ -20,7 +21,10 @@ const getConnectionStatus = createServerFn({ method: "GET" })
   });
 
 const appleMusicRouter = {
-  getConnectionStatus,
+  getConnectionStatus: createQueryProcedure(
+    ["appleMusic", "connectionStatus"],
+    getConnectionStatusFn,
+  ),
 };
 
 export { appleMusicRouter };

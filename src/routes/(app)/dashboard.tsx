@@ -1,5 +1,5 @@
-import { Link, createFileRoute, useLoaderData, useNavigate } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
   AlertTriangle,
   Calendar,
@@ -14,7 +14,7 @@ import { useState } from "react";
 
 import { AppleMusicConnect } from "@/components/apple-music-connect";
 import { api } from "@/lib/api";
-import { redirectIfUnauthenticatedMiddleware } from "@/lib/api/middleware";
+import { requireAuth } from "@/lib/api/middleware";
 import { authClient } from "@/lib/auth/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/ui/avatar";
 import { Button } from "@/ui/button";
@@ -63,59 +63,38 @@ interface CalendarInfo {
   primary: boolean;
 }
 
-const getDashboardData = createServerFn({ method: "GET" })
-  .middleware([redirectIfUnauthenticatedMiddleware])
-  .handler(async ({ context }) => {
-    const { session } = context;
-
-    const [appleMusicStatus, recentTracksData, calendarData] = await Promise.all([
-      api.appleMusic.getConnectionStatus(),
-      api.tracks.getRecent(),
-      api.calendars.list(),
-    ]);
-
-    const calendars = calendarData.calendars.filter((c) => c.name !== "Apple Music");
-    const selectedCalendar = calendars.find((c) => c.id === calendarData.selectedCalendarId);
-
-    return {
-      userEmail: session.user.email,
-      userImage: session.user.image,
-      appleMusicConnected: appleMusicStatus.connected,
-      calendars,
-      selectedCalendarId: calendarData.selectedCalendarId,
-      selectedCalendarName: selectedCalendar?.name ?? null,
-      recentTracks: recentTracksData,
-    };
-  });
-
 function DashboardPage() {
   const navigate = useNavigate();
-  const {
-    userEmail,
-    userImage,
-    appleMusicConnected,
-    calendars,
-    selectedCalendarId,
-    selectedCalendarName,
-    recentTracks,
-  } = useLoaderData({
-    from: "/(app)/dashboard",
-  });
+
+  // Fetch data using suspense queries
+  const { data: account } = useSuspenseQuery(api.account.get.queryOptions());
+  const { data: appleMusicStatus } = useSuspenseQuery(
+    api.appleMusic.getConnectionStatus.queryOptions(),
+  );
+  const { data: recentTracks } = useSuspenseQuery(api.tracks.getRecent.queryOptions());
+  const { data: calendarData } = useSuspenseQuery(api.calendars.list.queryOptions());
+
+  // Derive values from query data
+  const calendars = calendarData.calendars.filter((c) => c.name !== "Apple Music");
+  const selectedCalendar = calendars.find((c) => c.id === calendarData.selectedCalendarId);
+  const appleMusicConnected = appleMusicStatus.connected;
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   // Calendar picker state
   const [calendarPickerOpen, setCalendarPickerOpen] = useState(false);
   const [isSavingCalendar, setIsSavingCalendar] = useState(false);
-  const [currentCalendarId, setCurrentCalendarId] = useState<string | null>(selectedCalendarId);
+  const [currentCalendarId, setCurrentCalendarId] = useState<string | null>(
+    calendarData.selectedCalendarId,
+  );
   const [currentCalendarName, setCurrentCalendarName] = useState<string | null>(
-    selectedCalendarName,
+    selectedCalendar?.name ?? null,
   );
 
   async function handleCalendarSelect(calendar: CalendarInfo | null) {
     setIsSavingCalendar(true);
     try {
-      await api.calendars.select({ data: { calendarId: calendar?.id ?? null } });
+      await api.calendars.select.mutate({ calendarId: calendar?.id ?? null });
       setCurrentCalendarId(calendar?.id ?? null);
       setCurrentCalendarName(calendar?.name ?? null);
     } catch (error) {
@@ -127,7 +106,7 @@ function DashboardPage() {
   }
 
   async function handleDeleteAccount() {
-    await api.account.delete();
+    await api.account.delete.mutate();
     await authClient.signOut();
     navigate({ to: "/" });
   }
@@ -155,13 +134,13 @@ function DashboardPage() {
           <DropdownMenu>
             <DropdownMenuTrigger className="cursor-pointer rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
               <Avatar>
-                <AvatarImage src={userImage ?? undefined} alt="" />
-                <AvatarFallback>{userEmail?.charAt(0).toUpperCase()}</AvatarFallback>
+                <AvatarImage src={account.image ?? undefined} alt={account.name} />
+                <AvatarFallback>{account.name.charAt(0).toUpperCase()}</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuGroup>
-                <DropdownMenuLabel>{userEmail}</DropdownMenuLabel>
+                <DropdownMenuLabel>{account.email}</DropdownMenuLabel>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuItem variant="destructive" onClick={handleSignOut}>
@@ -369,7 +348,15 @@ function StatusBadge({ connected }: { connected: boolean }) {
 
 const Route = createFileRoute("/(app)/dashboard")({
   component: DashboardPage,
-  loader: () => getDashboardData(),
+  beforeLoad: () => requireAuth(),
+  loader: async ({ context: { queryClient } }) => {
+    await Promise.all([
+      queryClient.ensureQueryData(api.account.get.queryOptions()),
+      queryClient.ensureQueryData(api.appleMusic.getConnectionStatus.queryOptions()),
+      queryClient.ensureQueryData(api.tracks.getRecent.queryOptions()),
+      queryClient.ensureQueryData(api.calendars.list.queryOptions()),
+    ]);
+  },
 });
 
 export { Route };

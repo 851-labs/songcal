@@ -5,9 +5,10 @@ import { formatRelativeTime } from "@/utils/date";
 
 import { db } from "../../db";
 import { tracks } from "../../db/schema";
+import { createQueryProcedure } from "../create-procedure";
 import { throwIfUnauthenticatedMiddleware } from "../middleware";
 
-const getRecent = createServerFn({ method: "GET" })
+const getRecentFn = createServerFn({ method: "GET" })
   .middleware([throwIfUnauthenticatedMiddleware])
   .handler(async ({ context }) => {
     const userId = context.session.user.id;
@@ -34,7 +35,7 @@ const getRecent = createServerFn({ method: "GET" })
   });
 
 const tracksRouter = {
-  getRecent,
+  getRecent: createQueryProcedure(["tracks", "recent"], getRecentFn),
 };
 
 export { tracksRouter };

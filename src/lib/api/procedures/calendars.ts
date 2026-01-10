@@ -6,9 +6,10 @@ import { z } from "zod";
 import { listCalendars, refreshAccessToken } from "../../clients/google-calendar";
 import { db } from "../../db";
 import { accounts, syncState } from "../../db/schema";
+import { createMutationProcedureWithInput, createQueryProcedure } from "../create-procedure";
 import { throwIfUnauthenticatedMiddleware } from "../middleware";
 
-const list = createServerFn({ method: "GET" })
+const listFn = createServerFn({ method: "GET" })
   .middleware([throwIfUnauthenticatedMiddleware])
   .handler(async ({ context }) => {
     const userId = context.session.user.id;
@@ -43,13 +44,9 @@ const list = createServerFn({ method: "GET" })
     };
   });
 
-const select = createServerFn({ method: "POST" })
+const selectFn = createServerFn({ method: "POST" })
   .middleware([throwIfUnauthenticatedMiddleware])
-  .inputValidator(
-    z.object({
-      calendarId: z.string().nullable(),
-    }),
-  )
+  .inputValidator(z.object({ calendarId: z.string().nullable() }))
   .handler(async ({ context, data }) => {
     const userId = context.session.user.id;
     const { calendarId } = data;
@@ -70,7 +67,7 @@ const select = createServerFn({ method: "POST" })
     return { success: true };
   });
 
-const getSelected = createServerFn({ method: "GET" })
+const getSelectedFn = createServerFn({ method: "GET" })
   .middleware([throwIfUnauthenticatedMiddleware])
   .handler(async ({ context }) => {
     const userId = context.session.user.id;
@@ -85,9 +82,9 @@ const getSelected = createServerFn({ method: "GET" })
   });
 
 const calendarsRouter = {
-  list,
-  select,
-  getSelected,
+  list: createQueryProcedure(["calendars", "list"], listFn),
+  select: createMutationProcedureWithInput(["calendars", "select"], selectFn),
+  getSelected: createQueryProcedure(["calendars", "selected"], getSelectedFn),
 };
 
 export { calendarsRouter };

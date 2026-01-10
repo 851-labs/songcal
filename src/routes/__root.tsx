@@ -1,8 +1,14 @@
-import { HeadContent, Scripts, createRootRoute, Outlet } from "@tanstack/react-router";
+import type { QueryClient } from "@tanstack/react-query";
+
+import { HeadContent, Scripts, createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
 
-const Route = createRootRoute({
+interface RouterContext {
+  queryClient: QueryClient;
+}
+
+const Route = createRootRouteWithContext<RouterContext>()({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
