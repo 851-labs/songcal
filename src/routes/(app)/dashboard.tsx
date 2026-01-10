@@ -10,14 +10,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/ui/avatar";
 import { Badge } from "@/ui/badge";
 import { Button } from "@/ui/button";
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/ui/command";
-import {
   Dialog,
   DialogClose,
   DialogContent,
@@ -33,6 +25,8 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/ui/dropdown-menu";
@@ -54,7 +48,6 @@ import {
   ItemSeparator,
   ItemTitle,
 } from "@/ui/item";
-import { Popover, PopoverContent, PopoverTrigger } from "@/ui/popover";
 
 interface CalendarInfo {
   id: string;
@@ -68,7 +61,6 @@ function ConnectionsSection() {
   const calendars = calendarData.calendars.filter((c) => c.name !== "Apple Music");
   const selectedCalendar = calendars.find((c) => c.id === calendarData.selectedCalendarId);
 
-  const [pickerOpen, setPickerOpen] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [currentCalendarId, setCurrentCalendarId] = useState<string | null>(
     calendarData.selectedCalendarId,
@@ -87,7 +79,6 @@ function ConnectionsSection() {
       console.error("Failed to save calendar selection:", error);
     } finally {
       setIsSaving(false);
-      setPickerOpen(false);
     }
   }, []);
 
@@ -115,52 +106,35 @@ function ConnectionsSection() {
               <ItemDescription>Choose which calendar to sync to.</ItemDescription>
             </ItemContent>
             <ItemActions>
-              <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
-                <PopoverTrigger
-                  render={
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      aria-expanded={pickerOpen}
-                      disabled={isSaving}
-                    />
-                  }
-                >
+              <DropdownMenu>
+                <DropdownMenuTrigger render={<Button variant="outline" disabled={isSaving} />}>
                   {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
                   {currentCalendarName ?? "Apple Music"}
                   <ChevronsUpDown className="opacity-50" />
-                </PopoverTrigger>
-                <PopoverContent align="end" className="w-56 p-0">
-                  <Command>
-                    <CommandInput placeholder="Search calendars..." />
-                    <CommandList>
-                      <CommandEmpty>No calendar found.</CommandEmpty>
-                      <CommandGroup>
-                        <CommandItem
-                          value="apple-music"
-                          onSelect={() => handleCalendarSelect(null)}
-                          data-checked={currentCalendarId === null}
-                        >
-                          Apple Music
-                        </CommandItem>
-                        {calendars.map((calendar) => (
-                          <CommandItem
-                            key={calendar.id}
-                            value={calendar.name}
-                            onSelect={() => handleCalendarSelect(calendar)}
-                            data-checked={currentCalendarId === calendar.id}
-                          >
-                            {calendar.name}
-                            {calendar.primary && (
-                              <span className="text-muted-foreground ml-1">(Primary)</span>
-                            )}
-                          </CommandItem>
-                        ))}
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuRadioGroup value={currentCalendarId ?? "apple-music"}>
+                    <DropdownMenuRadioItem
+                      value="apple-music"
+                      onSelect={() => handleCalendarSelect(null)}
+                    >
+                      Apple Music
+                    </DropdownMenuRadioItem>
+                    {calendars.map((calendar) => (
+                      <DropdownMenuRadioItem
+                        key={calendar.id}
+                        value={calendar.id}
+                        onSelect={() => handleCalendarSelect(calendar)}
+                      >
+                        {calendar.name}
+                        {calendar.primary && (
+                          <span className="text-muted-foreground ml-1">(Primary)</span>
+                        )}
+                      </DropdownMenuRadioItem>
+                    ))}
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </ItemActions>
           </Item>
 
