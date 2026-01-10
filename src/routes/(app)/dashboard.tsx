@@ -49,17 +49,13 @@ import {
   ItemTitle,
 } from "@/ui/item";
 
-interface CalendarInfo {
-  id: string;
-  name: string;
-  primary: boolean;
-}
-
 function ConnectionsSection() {
   const { data: calendarData } = useSuspenseQuery(api.calendars.list.queryOptions());
 
   const calendars = calendarData.calendars.filter((c) => c.name !== "Apple Music");
   const selectedCalendar = calendars.find((c) => c.id === calendarData.selectedCalendarId);
+
+  const APPLE_MUSIC_COLOR = "#f43e64";
 
   const [isSaving, setIsSaving] = useState(false);
   const [currentCalendarId, setCurrentCalendarId] = useState<string | null>(
@@ -68,19 +64,27 @@ function ConnectionsSection() {
   const [currentCalendarName, setCurrentCalendarName] = useState<string | null>(
     selectedCalendar?.name ?? null,
   );
+  const [currentCalendarColor, setCurrentCalendarColor] = useState<string>(
+    selectedCalendar?.color ?? APPLE_MUSIC_COLOR,
+  );
 
-  const handleCalendarSelect = useCallback(async (calendar: CalendarInfo | null) => {
-    setIsSaving(true);
-    try {
-      await api.calendars.select.mutate({ calendarId: calendar?.id ?? null });
-      setCurrentCalendarId(calendar?.id ?? null);
-      setCurrentCalendarName(calendar?.name ?? null);
-    } catch (error) {
-      console.error("Failed to save calendar selection:", error);
-    } finally {
-      setIsSaving(false);
-    }
-  }, []);
+  const handleCalendarChange = useCallback(
+    async (value: string) => {
+      const calendar = value === "apple-music" ? null : calendars.find((c) => c.id === value);
+      setIsSaving(true);
+      try {
+        await api.calendars.select.mutate({ calendarId: calendar?.id ?? null });
+        setCurrentCalendarId(calendar?.id ?? null);
+        setCurrentCalendarName(calendar?.name ?? null);
+        setCurrentCalendarColor(calendar?.color ?? APPLE_MUSIC_COLOR);
+      } catch (error) {
+        console.error("Failed to save calendar selection:", error);
+      } finally {
+        setIsSaving(false);
+      }
+    },
+    [calendars],
+  );
 
   return (
     <div className="mb-12">
@@ -108,28 +112,36 @@ function ConnectionsSection() {
             <ItemActions>
               <DropdownMenu>
                 <DropdownMenuTrigger render={<Button variant="outline" disabled={isSaving} />}>
-                  {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                  {isSaving ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <span
+                      className="w-2.5 h-2.5 rounded-full shrink-0"
+                      style={{ backgroundColor: currentCalendarColor }}
+                    />
+                  )}
                   {currentCalendarName ?? "Apple Music"}
                   <ChevronsUpDown className="opacity-50" />
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
-                  <DropdownMenuRadioGroup value={currentCalendarId ?? "apple-music"}>
-                    <DropdownMenuRadioItem
-                      value="apple-music"
-                      onSelect={() => handleCalendarSelect(null)}
-                    >
+                  <DropdownMenuRadioGroup
+                    value={currentCalendarId ?? "apple-music"}
+                    onValueChange={handleCalendarChange}
+                  >
+                    <DropdownMenuRadioItem value="apple-music">
+                      <span
+                        className="w-2.5 h-2.5 rounded-full shrink-0"
+                        style={{ backgroundColor: APPLE_MUSIC_COLOR }}
+                      />
                       Apple Music
                     </DropdownMenuRadioItem>
                     {calendars.map((calendar) => (
-                      <DropdownMenuRadioItem
-                        key={calendar.id}
-                        value={calendar.id}
-                        onSelect={() => handleCalendarSelect(calendar)}
-                      >
+                      <DropdownMenuRadioItem key={calendar.id} value={calendar.id}>
+                        <span
+                          className="w-2.5 h-2.5 rounded-full shrink-0"
+                          style={{ backgroundColor: calendar.color }}
+                        />
                         {calendar.name}
-                        {calendar.primary && (
-                          <span className="text-muted-foreground ml-1">(Primary)</span>
-                        )}
                       </DropdownMenuRadioItem>
                     ))}
                   </DropdownMenuRadioGroup>

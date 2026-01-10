@@ -8,6 +8,7 @@ interface CalendarListEntry {
   summary: string;
   accessRole?: string;
   primary?: boolean;
+  backgroundColor: string;
 }
 
 interface CalendarListResponse {
@@ -18,6 +19,7 @@ interface CalendarInfo {
   id: string;
   name: string;
   primary: boolean;
+  color: string;
 }
 
 interface CreateEventResponse {
@@ -189,6 +191,7 @@ async function listCalendars(accessToken: string): Promise<CalendarInfo[]> {
     id: cal.id,
     name: cal.summary,
     primary: cal.primary ?? false,
+    color: cal.backgroundColor,
   }));
 }
 
