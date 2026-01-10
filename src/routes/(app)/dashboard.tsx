@@ -1,10 +1,18 @@
 import { Link, createFileRoute, useLoaderData, useNavigate } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { AlertTriangle, Calendar, CheckCircle, LogOut, Music, XCircle } from "lucide-react";
+import {
+  AlertTriangle,
+  Calendar,
+  CheckCircle,
+  ChevronsUpDown,
+  Loader2,
+  LogOut,
+  Music,
+  XCircle,
+} from "lucide-react";
 import { useState } from "react";
 
 import { AppleMusicConnect } from "@/components/apple-music-connect";
-import { CalendarPicker } from "@/components/calendar-picker";
 import { api } from "@/lib/api";
 import { redirectIfUnauthenticatedMiddleware } from "@/lib/api/middleware";
 import { authClient } from "@/lib/auth/client";
@@ -21,6 +29,14 @@ import {
 } from "@/ui/alert-dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/ui/avatar";
 import { Button } from "@/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/ui/command";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -40,35 +56,76 @@ import {
   ItemSeparator,
   ItemActions,
 } from "@/ui/item";
+import { Popover, PopoverContent, PopoverTrigger } from "@/ui/popover";
+
+interface CalendarInfo {
+  id: string;
+  name: string;
+  primary: boolean;
+}
 
 const getDashboardData = createServerFn({ method: "GET" })
   .middleware([redirectIfUnauthenticatedMiddleware])
   .handler(async ({ context }) => {
     const { session } = context;
 
-    const [appleMusicStatus, recentTracksData, calendarSelection] = await Promise.all([
+    const [appleMusicStatus, recentTracksData, calendarData] = await Promise.all([
       api.appleMusic.getConnectionStatus(),
       api.tracks.getRecent(),
-      api.calendars.getSelected(),
+      api.calendars.list(),
     ]);
+
+    const calendars = calendarData.calendars.filter((c) => c.name !== "Apple Music");
+    const selectedCalendar = calendars.find((c) => c.id === calendarData.selectedCalendarId);
 
     return {
       userEmail: session.user.email,
       userImage: session.user.image,
       appleMusicConnected: appleMusicStatus.connected,
-      selectedCalendarId: calendarSelection.calendarId,
+      calendars,
+      selectedCalendarId: calendarData.selectedCalendarId,
+      selectedCalendarName: selectedCalendar?.name ?? null,
       recentTracks: recentTracksData,
     };
   });
 
 function DashboardPage() {
   const navigate = useNavigate();
-  const { userEmail, userImage, appleMusicConnected, selectedCalendarId, recentTracks } =
-    useLoaderData({
-      from: "/(app)/dashboard",
-    });
+  const {
+    userEmail,
+    userImage,
+    appleMusicConnected,
+    calendars,
+    selectedCalendarId,
+    selectedCalendarName,
+    recentTracks,
+  } = useLoaderData({
+    from: "/(app)/dashboard",
+  });
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  // Calendar picker state
+  const [calendarPickerOpen, setCalendarPickerOpen] = useState(false);
+  const [isSavingCalendar, setIsSavingCalendar] = useState(false);
+  const [currentCalendarId, setCurrentCalendarId] = useState<string | null>(selectedCalendarId);
+  const [currentCalendarName, setCurrentCalendarName] = useState<string | null>(
+    selectedCalendarName,
+  );
+
+  async function handleCalendarSelect(calendar: CalendarInfo | null) {
+    setIsSavingCalendar(true);
+    try {
+      await api.calendars.select({ data: { calendarId: calendar?.id ?? null } });
+      setCurrentCalendarId(calendar?.id ?? null);
+      setCurrentCalendarName(calendar?.name ?? null);
+    } catch (error) {
+      console.error("Failed to save calendar selection:", error);
+    } finally {
+      setIsSavingCalendar(false);
+      setCalendarPickerOpen(false);
+    }
+  }
 
   async function handleDeleteAccount() {
     await api.account.delete();
@@ -136,13 +193,55 @@ function DashboardPage() {
                 </ItemMedia>
                 <ItemContent>
                   <ItemTitle>Google Calendar</ItemTitle>
-                  <ItemDescription>Connected as {userEmail}</ItemDescription>
+                  <ItemDescription>Choose which calendar to sync to.</ItemDescription>
                 </ItemContent>
                 <ItemActions>
-                  <CalendarPicker
-                    initialCalendarId={selectedCalendarId}
-                    initialCalendarName={null}
-                  />
+                  <Popover open={calendarPickerOpen} onOpenChange={setCalendarPickerOpen}>
+                    <PopoverTrigger
+                      render={
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={calendarPickerOpen}
+                          disabled={isSavingCalendar}
+                        />
+                      }
+                    >
+                      {isSavingCalendar ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                      {currentCalendarName ?? "Apple Music"}
+                      <ChevronsUpDown className="opacity-50" />
+                    </PopoverTrigger>
+                    <PopoverContent align="end" className="w-56 p-0">
+                      <Command>
+                        <CommandInput placeholder="Search calendars..." />
+                        <CommandList>
+                          <CommandEmpty>No calendar found.</CommandEmpty>
+                          <CommandGroup>
+                            <CommandItem
+                              value="apple-music"
+                              onSelect={() => handleCalendarSelect(null)}
+                              data-checked={currentCalendarId === null}
+                            >
+                              Apple Music
+                            </CommandItem>
+                            {calendars.map((calendar) => (
+                              <CommandItem
+                                key={calendar.id}
+                                value={calendar.name}
+                                onSelect={() => handleCalendarSelect(calendar)}
+                                data-checked={currentCalendarId === calendar.id}
+                              >
+                                {calendar.name}
+                                {calendar.primary && (
+                                  <span className="text-muted-foreground ml-1">(Primary)</span>
+                                )}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                 </ItemActions>
               </Item>
 
@@ -157,8 +256,8 @@ function DashboardPage() {
                   <ItemTitle>Apple Music</ItemTitle>
                   <ItemDescription>
                     {appleMusicConnected
-                      ? "Your listening history is being synced"
-                      : "Connect to start syncing your music"}
+                      ? "Your listening history is being synced."
+                      : "Connect to start syncing your music."}
                   </ItemDescription>
                 </ItemContent>
                 <ItemActions>
