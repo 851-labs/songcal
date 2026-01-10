@@ -117,10 +117,10 @@ function DashboardPage() {
                   <img
                     src={track.artworkUrl}
                     alt={`${track.name} artwork`}
-                    className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+                    className="w-12 h-12 rounded-lg object-cover shrink-0"
                   />
                 ) : (
-                  <div className="w-12 h-12 rounded-lg bg-midnight-700 flex items-center justify-center flex-shrink-0">
+                  <div className="w-12 h-12 rounded-lg bg-midnight-700 flex items-center justify-center shrink-0">
                     <Music className="w-5 h-5 text-zinc-500" />
                   </div>
                 )}
@@ -128,7 +128,7 @@ function DashboardPage() {
                   <p className="font-medium truncate">{track.name}</p>
                   <p className="text-sm text-zinc-400 truncate">{track.artist}</p>
                 </div>
-                <p className="text-xs text-zinc-500 flex-shrink-0">{track.syncedAt}</p>
+                <p className="text-xs text-zinc-500 shrink-0">{track.syncedAt}</p>
               </div>
             ))}
           </div>
