@@ -66,8 +66,9 @@ function DashboardPage() {
     navigate({ to: "/" });
   }
 
-  function handleSignOut() {
-    authClient.signOut();
+  async function handleSignOut() {
+    await authClient.signOut();
+    navigate({ to: "/" });
   }
 
   return (
@@ -97,7 +98,7 @@ function DashboardPage() {
                 <DropdownMenuLabel>{userEmail}</DropdownMenuLabel>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem variant="destructive" onSelect={handleSignOut}>
+              <DropdownMenuItem variant="destructive" onClick={handleSignOut}>
                 <LogOut />
                 Sign out
               </DropdownMenuItem>
