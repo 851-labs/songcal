@@ -182,7 +182,7 @@ function Step({
   );
 }
 
-const Route = createFileRoute("/")({
+const Route = createFileRoute("/(marketing)/")({
   component: LandingPage,
 });
 

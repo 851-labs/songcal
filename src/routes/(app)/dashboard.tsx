@@ -4,7 +4,10 @@ import { AlertTriangle, Calendar, CheckCircle, LogOut, Music, XCircle } from "lu
 
 import { AppleMusicConnect } from "@/components/apple-music-connect";
 import { CalendarPicker } from "@/components/calendar-picker";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { api } from "@/lib/api";
+import { redirectIfUnauthenticatedMiddleware } from "@/lib/api/middleware";
+import { authClient } from "@/lib/auth/client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,10 +16,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { api } from "@/lib/api";
-import { redirectIfUnauthenticatedMiddleware } from "@/lib/api/middleware";
-import { authClient } from "@/lib/auth/client";
+} from "@/ui/dropdown-menu";
 
 const getDashboardData = createServerFn({ method: "GET" })
   .middleware([redirectIfUnauthenticatedMiddleware])
@@ -41,7 +41,7 @@ const getDashboardData = createServerFn({ method: "GET" })
 function DashboardPage() {
   const { userEmail, userImage, appleMusicConnected, selectedCalendarId, recentTracks } =
     useLoaderData({
-      from: "/dashboard",
+      from: "/(app)/dashboard",
     });
   const navigate = useNavigate();
 
@@ -223,7 +223,7 @@ function StatusBadge({ connected }: { connected: boolean }) {
   );
 }
 
-const Route = createFileRoute("/dashboard")({
+const Route = createFileRoute("/(app)/dashboard")({
   component: DashboardPage,
   loader: () => getDashboardData(),
 });
