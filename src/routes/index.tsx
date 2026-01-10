@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { Music, Calendar, Zap } from "lucide-react";
 
 import { authClient } from "@/lib/auth/client";
@@ -11,97 +11,134 @@ function LandingPage() {
   };
 
   return (
-    <main className="min-h-[calc(100vh-64px)]">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        {/* Background gradient */}
-        <div className="absolute inset-0 bg-linear-to-b from-primary/10 via-transparent to-transparent" />
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-primary/20 rounded-full blur-3xl opacity-30" />
+    <>
+      {/* Marketing Header */}
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-background/80 border-b border-border">
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+          <Link
+            to="/"
+            className="flex items-center gap-2.5 text-foreground hover:text-primary transition-colors"
+          >
+            <div className="w-8 h-8 rounded-lg bg-linear-to-br from-primary to-chart-3 flex items-center justify-center">
+              <Music className="w-4 h-4 text-primary-foreground" />
+            </div>
+            <span className="font-semibold text-lg">songcal</span>
+          </Link>
 
-        <div className="relative max-w-4xl mx-auto px-6 pt-24 pb-32 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted border border-border text-sm text-primary mb-8">
-            <Zap className="w-4 h-4" />
-            <span>Automatic sync every minute</span>
+          <nav className="flex items-center gap-4">
+            {isPending ? (
+              <div className="w-24 h-9 rounded-lg bg-muted animate-pulse" />
+            ) : session?.user ? (
+              <Link
+                to="/dashboard"
+                className="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-semibold text-sm transition-colors"
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <button
+                onClick={handleSignIn}
+                className="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-semibold text-sm transition-colors cursor-pointer"
+              >
+                Get started
+              </button>
+            )}
+          </nav>
+        </div>
+      </header>
+
+      <main className="min-h-[calc(100vh-64px)]">
+        {/* Hero Section */}
+        <section className="relative overflow-hidden">
+          {/* Background gradient */}
+          <div className="absolute inset-0 bg-linear-to-b from-primary/10 via-transparent to-transparent" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-primary/20 rounded-full blur-3xl opacity-30" />
+
+          <div className="relative max-w-4xl mx-auto px-6 pt-24 pb-32 text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted border border-border text-sm text-primary mb-8">
+              <Zap className="w-4 h-4" />
+              <span>Automatic sync every minute</span>
+            </div>
+
+            <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6">
+              Your music history,
+              <br />
+              <span className="bg-linear-to-r from-chart-2 via-chart-3 to-chart-4 bg-clip-text text-transparent">
+                on your calendar
+              </span>
+            </h1>
+
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-12">
+              Connect your Apple Music and Google Calendar. Every song you play appears as a
+              calendar event—automatically.
+            </p>
+
+            {isPending ? (
+              <div className="h-14" />
+            ) : session?.user ? (
+              <a
+                href="/dashboard"
+                className="px-8 py-4 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-semibold text-lg transition-colors"
+              >
+                Go to Dashboard
+              </a>
+            ) : (
+              <button
+                onClick={handleSignIn}
+                className="px-8 py-4 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-semibold text-lg transition-colors cursor-pointer"
+              >
+                Get started
+              </button>
+            )}
           </div>
+        </section>
 
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6">
-            Your music history,
-            <br />
-            <span className="bg-linear-to-r from-chart-2 via-chart-3 to-chart-4 bg-clip-text text-transparent">
-              on your calendar
-            </span>
-          </h1>
-
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-12">
-            Connect your Apple Music and Google Calendar. Every song you play appears as a calendar
-            event—automatically.
-          </p>
-
-          {isPending ? (
-            <div className="h-14" />
-          ) : session?.user ? (
-            <a
-              href="/dashboard"
-              className="px-8 py-4 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-semibold text-lg transition-colors"
-            >
-              Go to Dashboard
-            </a>
-          ) : (
-            <button
-              onClick={handleSignIn}
-              className="px-8 py-4 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-semibold text-lg transition-colors cursor-pointer"
-            >
-              Get started
-            </button>
-          )}
-        </div>
-      </section>
-
-      {/* Features */}
-      <section className="max-w-5xl mx-auto px-6 pb-32">
-        <div className="grid md:grid-cols-3 gap-6">
-          <FeatureCard
-            icon={<Music className="w-6 h-6" />}
-            title="Apple Music"
-            description="Connect with MusicKit. We securely sync your recently played tracks."
-          />
-          <FeatureCard
-            icon={<Calendar className="w-6 h-6" />}
-            title="Google Calendar"
-            description="Events appear in a dedicated calendar with song details and links."
-          />
-          <FeatureCard
-            icon={<Zap className="w-6 h-6" />}
-            title="Always in Sync"
-            description="Background sync runs every minute. Your calendar stays up to date."
-          />
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section className="border-t border-border py-24">
-        <div className="max-w-4xl mx-auto px-6">
-          <h2 className="text-3xl font-bold text-center mb-16">How it works</h2>
-          <div className="grid md:grid-cols-3 gap-12">
-            <Step
-              number={1}
-              title="Sign in"
-              description="Connect your Google account to get started."
+        {/* Features */}
+        <section className="max-w-5xl mx-auto px-6 pb-32">
+          <div className="grid md:grid-cols-3 gap-6">
+            <FeatureCard
+              icon={<Music className="w-6 h-6" />}
+              title="Apple Music"
+              description="Connect with MusicKit. We securely sync your recently played tracks."
             />
-            <Step
-              number={2}
-              title="Connect Apple Music"
-              description="Authorize songcal to read your listening history."
+            <FeatureCard
+              icon={<Calendar className="w-6 h-6" />}
+              title="Google Calendar"
+              description="Events appear in a dedicated calendar with song details and links."
             />
-            <Step
-              number={3}
-              title="Enjoy"
-              description="Your music history syncs to Google Calendar automatically."
+            <FeatureCard
+              icon={<Zap className="w-6 h-6" />}
+              title="Always in Sync"
+              description="Background sync runs every minute. Your calendar stays up to date."
             />
           </div>
-        </div>
-      </section>
-    </main>
+        </section>
+
+        {/* How it works */}
+        <section className="border-t border-border py-24">
+          <div className="max-w-4xl mx-auto px-6">
+            <h2 className="text-3xl font-bold text-center mb-16">How it works</h2>
+            <div className="grid md:grid-cols-3 gap-12">
+              <Step
+                number={1}
+                title="Sign in"
+                description="Connect your Google account to get started."
+              />
+              <Step
+                number={2}
+                title="Connect Apple Music"
+                description="Authorize songcal to read your listening history."
+              />
+              <Step
+                number={3}
+                title="Enjoy"
+                description="Your music history syncs to Google Calendar automatically."
+              />
+            </div>
+          </div>
+        </section>
+      </main>
+    </>
   );
 }
 
