@@ -1,15 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
-import {
-  AlertTriangle,
-  Calendar,
-  CheckCircle,
-  ChevronsUpDown,
-  Loader2,
-  LogOut,
-  Music,
-  XCircle,
-} from "lucide-react";
+import { AlertTriangle, Calendar, ChevronsUpDown, Loader2, LogOut, Music } from "lucide-react";
 import { useState } from "react";
 
 import { AppleMusicConnect } from "@/components/apple-music-connect";
@@ -17,6 +8,7 @@ import { api } from "@/lib/api";
 import { requireAuth } from "@/lib/api/middleware";
 import { authClient } from "@/lib/auth/client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/ui/avatar";
+import { Badge } from "@/ui/badge";
 import { Button } from "@/ui/button";
 import {
   Command,
@@ -47,13 +39,13 @@ import {
 } from "@/ui/dropdown-menu";
 import {
   Item,
-  ItemMedia,
+  ItemActions,
   ItemContent,
-  ItemTitle,
   ItemDescription,
   ItemGroup,
+  ItemMedia,
   ItemSeparator,
-  ItemActions,
+  ItemTitle,
 } from "@/ui/item";
 import { Popover, PopoverContent, PopoverTrigger } from "@/ui/popover";
 
@@ -170,7 +162,12 @@ function DashboardPage() {
                   <Calendar className="w-5 h-5 text-muted-foreground" />
                 </ItemMedia>
                 <ItemContent>
-                  <ItemTitle>Google Calendar</ItemTitle>
+                  <ItemTitle>
+                    Google Calendar
+                    <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20">
+                      Connected
+                    </Badge>
+                  </ItemTitle>
                   <ItemDescription>Choose which calendar to sync to.</ItemDescription>
                 </ItemContent>
                 <ItemActions>
@@ -231,16 +228,25 @@ function DashboardPage() {
                   <Music className="w-5 h-5 text-muted-foreground" />
                 </ItemMedia>
                 <ItemContent>
-                  <ItemTitle>Apple Music</ItemTitle>
+                  <ItemTitle className="inline-flex items-center gap-2">
+                    Apple Music
+                    {appleMusicConnected && (
+                      <Badge className="bg-emerald-500/10 text-emerald-500 border-emerald-500/20">
+                        Connected
+                      </Badge>
+                    )}
+                  </ItemTitle>
                   <ItemDescription>
                     {appleMusicConnected
                       ? "Your listening history is being synced."
                       : "Connect to start syncing your music."}
                   </ItemDescription>
                 </ItemContent>
-                <ItemActions>
-                  {appleMusicConnected ? <StatusBadge connected={true} /> : <AppleMusicConnect />}
-                </ItemActions>
+                {!appleMusicConnected && (
+                  <ItemActions>
+                    <AppleMusicConnect />
+                  </ItemActions>
+                )}
               </Item>
             </ItemGroup>
           </div>
@@ -256,7 +262,7 @@ function DashboardPage() {
             </span>
           </h2>
           <p className="text-sm mb-4 text-muted-foreground mt-0.5">
-            Syncs automatically every minute
+            Syncs automatically every minute.
           </p>
 
           {recentTracks.length === 0 ? (
@@ -329,20 +335,6 @@ function DashboardPage() {
         </div>
       </main>
     </>
-  );
-}
-
-function StatusBadge({ connected }: { connected: boolean }) {
-  return connected ? (
-    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-medium">
-      <CheckCircle className="w-3.5 h-3.5" />
-      Connected
-    </div>
-  ) : (
-    <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-muted text-muted-foreground text-xs font-medium">
-      <XCircle className="w-3.5 h-3.5" />
-      Not connected
-    </div>
   );
 }
 
