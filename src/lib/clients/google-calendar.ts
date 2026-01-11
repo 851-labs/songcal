@@ -62,9 +62,42 @@ async function refreshAccessToken(
 }
 
 /**
+ * Set the background color for a calendar via the CalendarList API
+ */
+async function setCalendarColor(
+  accessToken: string,
+  calendarId: string,
+  backgroundColor: string,
+): Promise<void> {
+  const response = await fetch(
+    `${GOOGLE_CALENDAR_API}/users/me/calendarList/${encodeURIComponent(calendarId)}`,
+    {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        backgroundColor,
+      }),
+    },
+  );
+
+  if (!response.ok) {
+    const text = await response.text();
+    console.error(`Failed to set calendar color: ${response.status} - ${text}`);
+    // Don't throw - color is nice-to-have, not critical
+  }
+}
+
+/**
  * Get or create a calendar with the given name
  */
-async function getOrCreateCalendar(accessToken: string, calendarName: string): Promise<string> {
+async function getOrCreateCalendar(
+  accessToken: string,
+  calendarName: string,
+  color?: string,
+): Promise<string> {
   // List calendars to find existing one
   const listResponse = await fetch(`${GOOGLE_CALENDAR_API}/users/me/calendarList`, {
     headers: {
@@ -102,6 +135,12 @@ async function getOrCreateCalendar(accessToken: string, calendarName: string): P
   }
 
   const newCalendar: { id: string } = await createResponse.json();
+
+  // Set the calendar color if provided
+  if (color) {
+    await setCalendarColor(accessToken, newCalendar.id, color);
+  }
+
   return newCalendar.id;
 }
 

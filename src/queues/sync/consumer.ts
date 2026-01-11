@@ -9,10 +9,9 @@ import {
 } from "@/lib/clients/google-calendar";
 import { db } from "@/lib/db";
 import * as schema from "@/lib/db/schema";
+import { APPLE_MUSIC_COLOR, DEFAULT_CALENDAR_NAME } from "@/utils/constants";
 
 import { SyncJobMessage } from "./types";
-
-const DEFAULT_CALENDAR_NAME = "Apple Music";
 
 /**
  * Sync tracks for a single user
@@ -136,7 +135,8 @@ async function syncUserTracks(userId: string): Promise<void> {
 
     // Use selected calendar or fall back to default "Apple Music" calendar
     const calendarId =
-      syncState?.calendarId ?? (await getOrCreateCalendar(accessToken, DEFAULT_CALENDAR_NAME));
+      syncState?.calendarId ??
+      (await getOrCreateCalendar(accessToken, DEFAULT_CALENDAR_NAME, APPLE_MUSIC_COLOR));
 
     // Sync each new track
     const now = new Date();

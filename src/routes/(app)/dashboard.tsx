@@ -48,14 +48,13 @@ import {
   ItemSeparator,
   ItemTitle,
 } from "@/ui/item";
+import { APPLE_MUSIC_COLOR } from "@/utils/constants";
 
 function ConnectionsSection() {
   const { data: calendarData } = useSuspenseQuery(api.calendars.list.queryOptions());
 
   const calendars = calendarData.calendars.filter((c) => c.name !== "Apple Music");
   const selectedCalendar = calendars.find((c) => c.id === calendarData.selectedCalendarId);
-
-  const APPLE_MUSIC_COLOR = "#f43e64";
 
   const [isSaving, setIsSaving] = useState(false);
   const [currentCalendarId, setCurrentCalendarId] = useState<string | null>(

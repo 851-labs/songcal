@@ -1,0 +1,4 @@
+const APPLE_MUSIC_COLOR = "#f43e64";
+const DEFAULT_CALENDAR_NAME = "Apple Music";
+
+export { APPLE_MUSIC_COLOR, DEFAULT_CALENDAR_NAME };
