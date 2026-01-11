@@ -34,11 +34,11 @@ const Route = createRootRouteWithContext<RouterContext>()({
 
 function RootComponent() {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark font-sans">
       <head>
         <HeadContent />
       </head>
-      <body className="bg-background text-foreground min-h-screen antialiased">
+      <body className="bg-background text-foreground font-sans min-h-screen antialiased">
         <Outlet />
         <Scripts />
       </body>
