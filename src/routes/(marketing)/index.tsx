@@ -3,6 +3,8 @@ import { useCallback } from "react";
 
 import { authClient } from "@/lib/auth/client";
 
+import { Footer } from "./-components/footer";
+
 // Rose accent for dark mode
 const EVENT_COLOR = "#e07a8a";
 
@@ -319,6 +321,8 @@ function LandingPage() {
             </div>
           </div>
         </main>
+
+        <Footer />
       </div>
     </>
   );

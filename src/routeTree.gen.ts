@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as marketingIndexRouteImport } from './routes/(marketing)/index'
 import { Route as ApiCronRouteImport } from './routes/api/cron'
+import { Route as marketingTermsRouteImport } from './routes/(marketing)/terms'
+import { Route as marketingPrivacyRouteImport } from './routes/(marketing)/privacy'
 import { Route as appDashboardRouteImport } from './routes/(app)/dashboard'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as ApiAppleMusicTokenRouteImport } from './routes/api/apple-music/token'
@@ -24,6 +26,16 @@ const marketingIndexRoute = marketingIndexRouteImport.update({
 const ApiCronRoute = ApiCronRouteImport.update({
   id: '/api/cron',
   path: '/api/cron',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const marketingTermsRoute = marketingTermsRouteImport.update({
+  id: '/(marketing)/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const marketingPrivacyRoute = marketingPrivacyRouteImport.update({
+  id: '/(marketing)/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const appDashboardRoute = appDashboardRouteImport.update({
@@ -49,6 +61,8 @@ const ApiAppleMusicConnectRoute = ApiAppleMusicConnectRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/dashboard': typeof appDashboardRoute
+  '/privacy': typeof marketingPrivacyRoute
+  '/terms': typeof marketingTermsRoute
   '/api/cron': typeof ApiCronRoute
   '/': typeof marketingIndexRoute
   '/api/apple-music/connect': typeof ApiAppleMusicConnectRoute
@@ -57,6 +71,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/dashboard': typeof appDashboardRoute
+  '/privacy': typeof marketingPrivacyRoute
+  '/terms': typeof marketingTermsRoute
   '/api/cron': typeof ApiCronRoute
   '/': typeof marketingIndexRoute
   '/api/apple-music/connect': typeof ApiAppleMusicConnectRoute
@@ -66,6 +82,8 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/(app)/dashboard': typeof appDashboardRoute
+  '/(marketing)/privacy': typeof marketingPrivacyRoute
+  '/(marketing)/terms': typeof marketingTermsRoute
   '/api/cron': typeof ApiCronRoute
   '/(marketing)/': typeof marketingIndexRoute
   '/api/apple-music/connect': typeof ApiAppleMusicConnectRoute
@@ -76,6 +94,8 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/dashboard'
+    | '/privacy'
+    | '/terms'
     | '/api/cron'
     | '/'
     | '/api/apple-music/connect'
@@ -84,6 +104,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/dashboard'
+    | '/privacy'
+    | '/terms'
     | '/api/cron'
     | '/'
     | '/api/apple-music/connect'
@@ -92,6 +114,8 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/(app)/dashboard'
+    | '/(marketing)/privacy'
+    | '/(marketing)/terms'
     | '/api/cron'
     | '/(marketing)/'
     | '/api/apple-music/connect'
@@ -101,6 +125,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   appDashboardRoute: typeof appDashboardRoute
+  marketingPrivacyRoute: typeof marketingPrivacyRoute
+  marketingTermsRoute: typeof marketingTermsRoute
   ApiCronRoute: typeof ApiCronRoute
   marketingIndexRoute: typeof marketingIndexRoute
   ApiAppleMusicConnectRoute: typeof ApiAppleMusicConnectRoute
@@ -122,6 +148,20 @@ declare module '@tanstack/react-router' {
       path: '/api/cron'
       fullPath: '/api/cron'
       preLoaderRoute: typeof ApiCronRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(marketing)/terms': {
+      id: '/(marketing)/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof marketingTermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(marketing)/privacy': {
+      id: '/(marketing)/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof marketingPrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/(app)/dashboard': {
@@ -157,6 +197,8 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   appDashboardRoute: appDashboardRoute,
+  marketingPrivacyRoute: marketingPrivacyRoute,
+  marketingTermsRoute: marketingTermsRoute,
   ApiCronRoute: ApiCronRoute,
   marketingIndexRoute: marketingIndexRoute,
   ApiAppleMusicConnectRoute: ApiAppleMusicConnectRoute,
