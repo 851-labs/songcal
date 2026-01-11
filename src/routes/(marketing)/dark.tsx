@@ -41,7 +41,7 @@ const HOURS = [
   { label: "8pm", top: 92 },
 ];
 
-function LandingPage() {
+function DarkLandingPage() {
   const { data: session } = authClient.useSession();
 
   const handleSignIn = useCallback(() => {
@@ -202,7 +202,7 @@ function LandingPage() {
             <div className="relative">
               {/* Glow underneath calendar */}
               <div
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] pointer-events-none"
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  w-[1200px] h-[1200px] pointer-events-none"
                 style={{
                   background:
                     "radial-gradient(circle at center, rgba(224, 122, 138, 0.15) 0%, transparent 60%)",
@@ -324,8 +324,8 @@ function LandingPage() {
   );
 }
 
-const Route = createFileRoute("/(marketing)/")({
-  component: LandingPage,
+const Route = createFileRoute("/(marketing)/dark")({
+  component: DarkLandingPage,
 });
 
 export { Route };
