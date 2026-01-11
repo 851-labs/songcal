@@ -1,16 +1,8 @@
-import type { ReactNode } from "react";
+import { Outlet, Link, createFileRoute } from "@tanstack/react-router";
 
-import { Link } from "@tanstack/react-router";
+import { Footer } from "./-components/footer";
 
-import { Footer } from "./footer";
-
-interface LegalLayoutProps {
-  title: string;
-  lastUpdated: string;
-  children: ReactNode;
-}
-
-function LegalLayout({ title, lastUpdated, children }: LegalLayoutProps) {
+function LegalLayout() {
   return (
     <>
       <style>{`
@@ -131,26 +123,9 @@ function LegalLayout({ title, lastUpdated, children }: LegalLayoutProps) {
         </header>
 
         {/* Content */}
-        <main className="relative z-10 px-6 md:px-10 pb-16">
+        <main className="relative z-10 px-6 md:px-10 pt-8 md:pt-12 pb-16">
           <div className="max-w-3xl mx-auto">
-            <h1
-              className="text-4xl md:text-5xl mb-2"
-              style={{
-                fontFamily: "Crimson Pro, serif",
-                fontWeight: 600,
-                color: "var(--dark-text)",
-              }}
-            >
-              {title}
-            </h1>
-            <p
-              className="text-sm mb-12"
-              style={{ fontFamily: "Crimson Pro, serif", color: "var(--dark-muted)" }}
-            >
-              Last updated: {lastUpdated}
-            </p>
-
-            <div className="legal-prose">{children}</div>
+            <Outlet />
           </div>
         </main>
 
@@ -160,4 +135,8 @@ function LegalLayout({ title, lastUpdated, children }: LegalLayoutProps) {
   );
 }
 
-export { LegalLayout };
+const Route = createFileRoute("/(marketing)/_legal")({
+  component: LegalLayout,
+});
+
+export { Route };

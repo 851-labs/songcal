@@ -4,11 +4,9 @@ import { HeadContent, Scripts, createRootRouteWithContext, Outlet } from "@tanst
 
 import appCss from "../styles.css?url";
 
-interface RouterContext {
+const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
-}
-
-const Route = createRootRouteWithContext<RouterContext>()({
+}>()({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
