@@ -34,13 +34,13 @@ const GROUP_POSITIONS = [
 
 // Hour markers to show
 const HOURS = [
-  { label: "8am", top: 4 },
+  { label: "8am", top: 5 },
   { label: "10am", top: 20 },
-  { label: "12pm", top: 40 },
-  { label: "2pm", top: 55 },
-  { label: "4pm", top: 68 },
+  { label: "12pm", top: 35 },
+  { label: "2pm", top: 50 },
+  { label: "4pm", top: 65 },
   { label: "6pm", top: 80 },
-  { label: "8pm", top: 92 },
+  { label: "8pm", top: 95 },
 ];
 
 function LandingPage() {
@@ -136,8 +136,8 @@ function LandingPage() {
             {/* Left: Hero text */}
             <div className="lg:mb-16">
               <span
-                className="inline-flex items-center gap-2 text-sm mb-4 ml-1"
-                style={{ fontFamily: "Crimson Pro, serif", color: "var(--dark-muted)" }}
+                className="inline-flex items-center gap-2 text-[13px] mb-4 ml-1"
+                style={{ color: "var(--dark-muted)" }}
               >
                 <span className="relative flex h-2 w-2">
                   <span
@@ -227,7 +227,7 @@ function LandingPage() {
                     <span
                       className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium"
                       style={{
-                        fontFamily: "Crimson Pro, serif",
+                        fontFamily: "Figtree Variable, sans-serif",
                         background: "var(--dark-rose)",
                         color: "white",
                       }}
@@ -237,14 +237,11 @@ function LandingPage() {
                     <div>
                       <span
                         className="block text-sm font-medium"
-                        style={{ fontFamily: "Crimson Pro, serif", color: "var(--dark-text)" }}
+                        style={{ color: "var(--dark-text)" }}
                       >
                         Thursday
                       </span>
-                      <span
-                        className="block text-xs"
-                        style={{ fontFamily: "Crimson Pro, serif", color: "var(--dark-muted)" }}
-                      >
+                      <span className="block text-xs" style={{ color: "var(--dark-muted)" }}>
                         January 2026
                       </span>
                     </div>
@@ -271,8 +268,8 @@ function LandingPage() {
                       style={{ top: `${hour.top}%` }}
                     >
                       <span
-                        className="w-12 text-right pr-3 text-xs shrink-0 -mt-2"
-                        style={{ fontFamily: "Crimson Pro, serif", color: "var(--dark-muted)" }}
+                        className="w-12 text-right pr-3 text-[11px] shrink-0 -mt-2"
+                        style={{ color: "var(--dark-muted)" }}
                       >
                         {hour.label}
                       </span>
@@ -295,21 +292,18 @@ function LandingPage() {
                         className="song-event absolute left-14 right-3 rounded-sm flex items-center px-3 gap-2 overflow-hidden cursor-default"
                         style={{
                           top: `${topPercent}%`,
-                          height: "16px",
+                          height: "18px",
                           background: EVENT_COLOR,
                           animationDelay: `${idx * 0.04}s`,
                         }}
                         title={`${song.song} - ${song.artist}`}
                       >
-                        <span
-                          className="text-[11px] font-medium truncate"
-                          style={{ fontFamily: "Crimson Pro, serif", color: "white" }}
-                        >
+                        <span className="text-xs font-semibold truncate" style={{ color: "white" }}>
                           {song.song}
                         </span>
                         <span
-                          className="text-[11px] truncate opacity-70 hidden sm:inline"
-                          style={{ fontFamily: "Crimson Pro, serif", color: "white" }}
+                          className="text-xs font-medium truncate opacity-70"
+                          style={{ color: "white" }}
                         >
                           {song.artist}
                         </span>
