@@ -39,6 +39,7 @@
       "database_name": "songcal",
       "database_id": "ef1d5722-20ff-446a-b308-cc2178bd1bab",
       "migrations_dir": "drizzle/migrations",
+      "remote": true, // Connect to prod D1 for debugging
     },
   ],
   "queues": {

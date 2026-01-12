@@ -135,7 +135,6 @@ const syncState = sqliteTable("sync_state", {
     .unique(),
   calendarId: text("calendar_id"), // Selected Google Calendar ID (null = use default "Apple Music")
   lastSeenTrackIds: text("last_seen_track_ids"), // JSON array of track IDs
-  initialized: integer("initialized", { mode: "boolean" }).notNull().default(false),
   lastSyncAt: integer("last_sync_at", { mode: "timestamp" }),
   updatedAt: integer("updated_at", { mode: "timestamp" })
     .notNull()

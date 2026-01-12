@@ -64,7 +64,6 @@ const selectFn = createServerFn({ method: "POST" })
       await db.insert(syncState).values({
         userId,
         calendarId,
-        initialized: false,
       });
     }
 

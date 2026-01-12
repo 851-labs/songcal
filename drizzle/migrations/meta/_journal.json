@@ -36,6 +36,13 @@
       "when": 1767859677707,
       "tag": "0004_natural_manta",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1768192834960,
+      "tag": "0005_clammy_praxagora",
+      "breakpoints": true
     }
   ]
 }
