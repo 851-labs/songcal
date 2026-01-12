@@ -136,8 +136,12 @@ function LandingPage() {
             {/* Left: Hero text */}
             <div className="lg:mb-16">
               <span
-                className="inline-flex items-center gap-2 text-[13px] mb-4 ml-1"
-                style={{ color: "var(--dark-muted)" }}
+                className="inline-flex items-center gap-2 text-[12px] mb-4 px-3 py-1.5 rounded-full backdrop-blur-lg"
+                style={{
+                  color: "var(--dark-muted)",
+                  background: "rgba(255, 255, 255, 0.05)",
+                  border: "1px solid var(--dark-line)",
+                }}
               >
                 <span className="relative flex h-2 w-2">
                   <span
@@ -152,7 +156,7 @@ function LandingPage() {
                 syncing every minute
               </span>
               <h1
-                className="text-5xl md:text-5xl lg:text-6xl leading-[1.1] mb-6"
+                className="text-5xl md:text-5xl lg:text-6xl mb-6"
                 style={{
                   fontFamily: "Crimson Pro, serif",
                   fontWeight: 600,
