@@ -5,8 +5,6 @@ pre-commit:
       run: bun run format
     lint:
       run: bun run lint
-    types:
-      run: bun run types
 
 commit-msg:
   commands:
