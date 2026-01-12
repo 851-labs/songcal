@@ -47,7 +47,7 @@ function LandingPage() {
   const { data: session } = authClient.useSession();
 
   const handleSignIn = useCallback(() => {
-    authClient.signIn.social({ provider: "google", callbackURL: "/dashboard" });
+    void authClient.signIn.social({ provider: "google", callbackURL: "/dashboard" });
   }, []);
 
   return (

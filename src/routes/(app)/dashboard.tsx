@@ -235,7 +235,7 @@ function DangerZoneSection() {
   const handleDeleteAccount = useCallback(async () => {
     await api.account.delete.mutate();
     await authClient.signOut();
-    navigate({ to: "/" });
+    void navigate({ to: "/" });
   }, [navigate]);
 
   return (
@@ -353,7 +353,7 @@ function DashboardHeader() {
 
   const handleSignOut = useCallback(async () => {
     await authClient.signOut();
-    navigate({ to: "/" });
+    void navigate({ to: "/" });
   }, [navigate]);
 
   return (
