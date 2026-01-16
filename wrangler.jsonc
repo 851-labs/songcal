@@ -19,12 +19,12 @@
   },
   "routes": [
     {
-      "pattern": "songcal.sh",
+      "pattern": "songcal.851.sh",
       "custom_domain": true,
     },
   ],
   "vars": {
-    "BETTER_AUTH_URL": "https://songcal.sh",
+    "BETTER_AUTH_URL": "https://songcal.851.sh",
   },
   "d1_databases": [
     {
